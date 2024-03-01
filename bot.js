@@ -62,12 +62,11 @@ for (const file of eventFiles) {
 }
 
 /**********************************************************************/
-// Define Collection of Commands, Slash Commands and cooldowns
+// Define Collection of Slash/Modal Commands and Cooldowns
 
 client.slashCommands = new Collection();
 client.modalCommands = new Collection();
 client.cooldowns = new Collection();
-client.autocompleteInteractions = new Collection();
 
 
 /**********************************************************************/
