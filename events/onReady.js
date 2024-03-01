@@ -5,7 +5,7 @@
  * @version 3.2.2
  */
 
-const { Events } = require("discord.js");
+const { Events, ActivityType } = require("discord.js");
 
 module.exports = {
 	name: Events.ClientReady,
@@ -16,6 +16,15 @@ module.exports = {
 	 * @param {import('../typings').Client} client Main Application Client.
 	 */
 	execute(client) {
+
+		client.user.setPresence({
+			activities: [{
+				 type: ActivityType.Custom,
+				 name: "Status", 
+				 state: "💾 Chilling on my owners computer!"
+			}]
+		})
+
 		console.log(`Ready! Logged in as ${client.user.tag}`);
 	},
 };

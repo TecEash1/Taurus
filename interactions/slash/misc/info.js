@@ -17,7 +17,7 @@ module.exports = {
   async execute(interaction) {
 
     const github = new ButtonBuilder()
-      .setURL('https://github.com/TecEash1/taurus')
+      .setURL('https://github.com/TecEash1/Taurus')
       .setLabel('GitHub Repository')
       .setEmoji("⚒️")
       .setStyle(ButtonStyle.Link);
