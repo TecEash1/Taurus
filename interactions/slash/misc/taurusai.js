@@ -28,7 +28,7 @@ module.exports = {
 
         switch (categorys) {
             case "ask":
-                const botai = new ModalBuilder()
+                const taurus = new ModalBuilder()
 					.setTitle("Ask TaurusAI something")
 					.setCustomId("taurus_ai");
 
@@ -37,9 +37,9 @@ module.exports = {
 					.setRequired(true)
 					.setLabel("Question:")
 					.setStyle(TextInputStyle.Paragraph);
-				const botai_question_ActionRow = new ActionRowBuilder().addComponents(question);
-				botai.addComponents(botai_question_ActionRow);
-				await interaction.showModal(botai);
+				const taurusai_question_ActionRow = new ActionRowBuilder().addComponents(question);
+				taurus.addComponents(taurusai_question_ActionRow);
+				await interaction.showModal(taurus);
 				break;
             case "personalise":
 				if (!owner.includes(interaction.user.id)) {
@@ -48,7 +48,7 @@ module.exports = {
 
                 const personalise = new ModalBuilder()
 					.setTitle("Customise how Taurus responds")
-					.setCustomId("bot_ai_personality");
+					.setCustomId("taurus_ai_personality");
 
 				const prompt = new TextInputBuilder()
 					.setCustomId("personalise_taurusai")

@@ -9,10 +9,10 @@
 const { ActionRowBuilder, ButtonBuilder, EmbedBuilder } = require("discord.js");
 const fs = require('fs').promises;
 const path = require('path');
-const {guild_id_log, channel_id_log} = require("../../../config.json");
+const {guild_id_logs, channel_id_logs} = require("../../../config.json");
 
-const serverId = guild_id_log;
-const channelId = channel_id_log;
+const serverId = guild_id_logs;
+const channelId = channel_id_logs;
 
 module.exports = {
     id: "taurus_ai_personality",
@@ -30,7 +30,7 @@ module.exports = {
         
         }
         
-        const personalityFilePath = __dirname + '../../../personality.txt';
+        const personalityFilePath = __dirname + '../../../../personality.txt';
 
         let personalityContent;
         try {
@@ -97,7 +97,7 @@ module.exports = {
         collector.on('collect', async i => {
             if (i.customId === 'yes_botai_personality') {
 
-                const personalityFilePath = path.join(__dirname, '/personality.txt');
+                const personalityFilePath = path.join(__dirname, '../../../personality.txt');
                 const tempFilePath = path.join(__dirname, 'temp.txt');
         
                 let oldPersonalityContent;
