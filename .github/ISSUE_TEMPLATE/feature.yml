@@ -1,0 +1,27 @@
+name: ✨ Feature
+description: Suggest any additional features
+title: "[FEATURE] <title>"
+labels: [ "feature" ]
+body:
+  - type: dropdown
+    id: category
+    attributes:
+      label: 📂 What category is this feature in?
+      multiple: false
+      options:
+        - Information
+        - AI
+        - Other
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: 📝 Description of Feature
+      description: |
+        A concise description of what feature you want to be implemented.
+        
+        Tip: If you have already implemented it and have a Pull Request please include the link
+      placeholder: |
+        The feature I want to be implemented is...
+    validations:
+      required: true

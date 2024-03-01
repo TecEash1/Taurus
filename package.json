@@ -1,0 +1,32 @@
+{
+	"name": "taurus",
+	"version": "1",
+	"description": "An AI Discord Bot!",
+	"types": "./typings.d.ts",
+	"main": "bot.js",
+	"scripts": {
+		"start": "node bot.js"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/TecEash1/Taurus.git"
+	},
+	"keywords": [
+		"discord-js"
+	],
+	"author": {
+		"name": "TechyGiraffe999",
+		"url": "https://github.com/TecEash1/Taurus"
+	},
+	"license": "Apache-2.0",
+	"bugs": {
+		"url": "https://github.com/TecEash1/Taurus/issues"
+	},
+	"dependencies": {
+		"@google/generative-ai": "^0.2.1",
+		"api": "^6.1.1",
+		"axios": "^1.6.7",
+		"discord-api-types": "^0.37.43",
+		"discord.js": "^14.11.0"
+	}
+}

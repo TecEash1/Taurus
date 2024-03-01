@@ -1,0 +1,24 @@
+name: 🚀 Enhancement
+description: Suggest improvements to pre-exisitng features
+title: "[ENHANCEMENT] <title>"
+labels: [ "enhancement" ]
+body:
+  - type: textarea
+    attributes:
+      label: 📋 What is the current feature?
+      description: A clear statement of the current feature
+      placeholder: |
+        The [command_name] command
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: 🌟 How do you want it to be improved?
+      description: |
+        A concise description of how you want the feature you mentioned to be improved
+        
+        Tip: If you have already implemented it and have a Pull Request please include the link
+      placeholder: |
+        I would like this command to have...
+    validations:
+      required: true
