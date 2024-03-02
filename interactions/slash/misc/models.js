@@ -42,9 +42,7 @@ module.exports = {
       .then(({ data }) => {
         choices = JSON.parse(data);
 
-        choices = choices.filter(choice => choice.includes('.safetensors'));
         const choices_string = "```\n- " + choices.join("\n- ") + "\n```";
-
         
         const models = new EmbedBuilder()
           .setTitle('🖼️ Available Models')

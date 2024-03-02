@@ -3,14 +3,15 @@
  * @author TechyGiraffe999
  */
 
-
 /**
  * @type {import('../../../typings').SlashInteractionCommand}
  */
 
 const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
-const {XProdiaKey} = require('../../../config.json')
-
+const {XProdiaKey, Block_NSFW_Images} = require('../../../config.json')
+const axios = require('axios');
+const tf = require('@tensorflow/tfjs-node');
+const nsfw = require('nsfwjs');
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -108,13 +109,51 @@ module.exports = {
 
     const prompt = interaction.options.getString('prompt');
     const style_preset = interaction.options.getString('style-preset');
-    const negative_prompt = interaction.options.getString('negative-prompt');
     const steps = interaction.options.getInteger('steps');
     const cfg_scale = interaction.options.getInteger('cfg-scale');
     const seed = interaction.options.getInteger('seed');
     const sampler = interaction.options.getString('sampler');
 
+    let negative_prompt = interaction.options.getString('negative-prompt');
     let model = interaction.options.getString('model');
+    
+    const nsfw_embed = new EmbedBuilder()
+    .setDescription(`**⚠️ NSFW content detected!**`)
+    .setColor('Red');
+
+    if (Block_NSFW_Images) {
+      try {
+        const response = await fetch('https://raw.githubusercontent.com/LDNOOBW/List-of-Dirty-Naughty-Obscene-and-Otherwise-Bad-Words/master/en');
+        const data = await response.text();
+        let nsfw_words = data.split('\n');
+        nsfw_words = nsfw_words.filter(word => word !== 'suck' && word !== 'sucks');
+        
+        let promptWords = prompt.split(' ');
+        
+        for (let word of nsfw_words) {
+          if (promptWords.includes(word)) {
+            await interaction.followUp({ embeds: [nsfw_embed] });
+            return;
+          }
+        }
+      } catch (err) {
+        console.error(err);
+      }
+    }
+
+    async function nsfw_getPic(image) {
+      const pic = await axios.get(image, { responseType: 'arraybuffer' });
+      const model = await nsfw.load();
+      image_analyse = await tf.node.decodeImage(pic.data, 3);
+      const predictions = await model.classify(image_analyse);
+      image_analyse.dispose();
+
+      if (predictions[0].probability > 0.5 && (predictions[0].className === "Porn") || (predictions[0].className === "Hentai") || (predictions[0].className === "Sexy")) {
+          await interaction.followUp({ embeds: [nsfw_embed] });
+          return true;
+      }
+      return image
+    }
 
     const sdk = require('api')('@prodia/v1.3.0#6fdmny2flsvwyf65');
 
@@ -124,7 +163,6 @@ module.exports = {
     sdk.listModels()
     .then(({ data }) => {
       choices = JSON.parse(data);
-      choices = choices.filter(choice => choice.includes('.safetensors'));
     })
     .catch(err => console.error(err));
 
@@ -139,7 +177,7 @@ module.exports = {
     if (!model) {
       model = "absolutereality_V16.safetensors [37db0fc3]";
     }
-  
+      
     let generateParams = {
       model: model, 
       prompt: prompt,
@@ -150,6 +188,8 @@ module.exports = {
       ...(cfg_scale && { cfg_scale: cfg_scale }),
       ...(seed && { seed: seed })
     };
+    
+
 
     try{
       sdk.generate(generateParams)
@@ -161,16 +201,27 @@ module.exports = {
               if (data.status === 'succeeded') {
                 clearInterval(intervalId);
 
-                const image = data.imageUrl;
+                let image = data.imageUrl;
 
-                const success = new EmbedBuilder()
+                (async () => {
+                  if (Block_NSFW_Images) {
+                    const newImage = await nsfw_getPic(image);
+                    image = newImage;
+                    if (image === true) {
+                      return;
+                    }
+                  }
+
+                  const success = new EmbedBuilder()
                   .setImage(image)
                   .setTitle('🖼️ Generated Image!')
                   .setDescription(`> **${prompt}**`)
                   .setColor('Random')
                   .setFooter({ text: `Requested by ${interaction.user.tag}, Powered By Prodia`, iconURL: interaction.user.displayAvatarURL() })
-                
-                return interaction.followUp({embeds: [success]});
+                  
+                  return interaction.followUp({embeds: [success]});
+
+                })();
 
               } else if (data.status === 'failed') {
                 clearInterval(intervalId);
