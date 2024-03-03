@@ -42,7 +42,7 @@ module.exports = (client) => {
     
         webhookClient.send({
             username: 'Taurus Console',
-            avatarURL: 'https://private-user-images.githubusercontent.com/92249532/309333056-bd4aca7e-daab-4eeb-9265-e53cc1925e8c.png?jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbSIsImtleSI6ImtleTUiLCJleHAiOjE3MDk0NzI2MzgsIm5iZiI6MTcwOTQ3MjMzOCwicGF0aCI6Ii85MjI0OTUzMi8zMDkzMzMwNTYtYmQ0YWNhN2UtZGFhYi00ZWViLTkyNjUtZTUzY2MxOTI1ZThjLnBuZz9YLUFtei1BbGdvcml0aG09QVdTNC1ITUFDLVNIQTI1NiZYLUFtei1DcmVkZW50aWFsPUFLSUFWQ09EWUxTQTUzUFFLNFpBJTJGMjAyNDAzMDMlMkZ1cy1lYXN0LTElMkZzMyUyRmF3czRfcmVxdWVzdCZYLUFtei1EYXRlPTIwMjQwMzAzVDEzMjUzOFomWC1BbXotRXhwaXJlcz0zMDAmWC1BbXotU2lnbmF0dXJlPTdhZDQ0ZmQ0ZGFhMmViYWU4OTdmMTEyOGViYjAyZGRlNGMxNjljNTQ2YzRlYjUyMmUxOTYzNGQzZjRkNjRiN2QmWC1BbXotU2lnbmVkSGVhZGVycz1ob3N0JmFjdG9yX2lkPTAma2V5X2lkPTAmcmVwb19pZD0wIn0.H9QMDt-sxNmO03xmtIDgC1MYWyuTYNH1C6RT5L10D_8',
+            avatarURL: 'https://github.com/TecEash1/TecEash1/assets/92249532/bd4aca7e-daab-4eeb-9265-e53cc1925e8c',
             embeds: [embed]
         }).catch(console.error);
     
