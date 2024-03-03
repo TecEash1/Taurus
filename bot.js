@@ -172,8 +172,8 @@ client.login(token);
 // Anti Crash script
 
 process.on("unhandRejection", (reason, promise) => {
-	console.log(`🚫 Critical Error detected:\n\n`, reason, promise);
+	console.error(`🚫 Critical Error detected:\n\n`, reason, promise);
 });
 process.on("uncaughtException", (error, origin) => {
-	console.log(`🚫 Critical Error detected:\n\n`, error, origin);
+	console.error(`🚫 Critical Error detected:\n\n`, error, origin);
 });
