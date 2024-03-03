@@ -7,6 +7,7 @@
  * @type {import("../../../../typings").ModalInteractionCommand}
  */
 const fs = require('fs').promises;
+const path = require('path');
 const {  EmbedBuilder } = require("discord.js");
 const { GoogleGenerativeAI, HarmBlockThreshold, HarmCategory } = require("@google/generative-ai");
 const { Gemini_API_KEY } = require("../../../config.json"); 
@@ -25,7 +26,7 @@ module.exports = {
             return interaction.reply({ embeds: [invalid_api] });
         }
         
-        const personalityFilePath = __dirname + '../../../../personality.txt';
+        const personalityFilePath = path.join(__dirname + '../../../../personality.txt');
         const personalityContent = await fs.readFile(personalityFilePath, 'utf-8');
         const personalityLines = personalityContent.split('\n');
 
