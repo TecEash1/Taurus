@@ -37,21 +37,24 @@ module.exports = {
 
     sdk.auth(XProdiaKey);
 
-    let choices = []
-    sdk.listModels()
-      .then(({ data }) => {
-        choices = JSON.parse(data);
-
-        const choices_string = "```\n- " + choices.join("\n- ") + "\n```";
-        
-        const models = new EmbedBuilder()
-          .setTitle('🖼️ Available Models')
-          .setDescription(choices_string)
-          .setColor('Random')
-
-        return interaction.followUp({embeds: [models]});
-      })
-      .catch(err => interaction.followUp({embeds: [error]}));
+    try{
+      const {data} = await sdk.listModels();
+       choices = JSON.parse(data);
+    } catch (e) {
+      return interaction.followUp({embeds: [error]});
     }
+  
+
+    const choices_string = "```\n- " + choices.join("\n- ") + "\n```";
+        
+    const models = new EmbedBuilder()
+      .setTitle('🖼️ Available Models')
+      .setDescription(choices_string)
+      .setColor('Random')
+
+    return interaction.followUp({embeds: [models]});
+
+
+  },
 };
 

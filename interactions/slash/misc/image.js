@@ -165,12 +165,12 @@ module.exports = {
 
     sdk.auth(XProdiaKey);
 
-    let choices = []
-    sdk.listModels()
-    .then(({ data }) => {
-      choices = JSON.parse(data);
-    })
-    .catch(err => console.error(err));
+    try{
+      const {data} = await sdk.listModels();
+       choices = JSON.parse(data);
+    } catch (e) {
+      return interaction.followUp({embeds: [error]});
+    }
 
     if (model && !choices.includes(model)) {
       const no_model = new EmbedBuilder()
