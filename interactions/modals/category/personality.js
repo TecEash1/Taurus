@@ -32,7 +32,7 @@ module.exports = {
         
         }
         
-        const personalityFilePath = __dirname + '../../../../personality.txt';
+        const personalityFilePath = path.join(__dirname + '../../../../personality.txt');
 
         let personalityContent;
         try {
