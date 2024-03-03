@@ -4,6 +4,7 @@
 	"client_id": "...",
     "guild_id_logs": "...",
 	"channel_id_logs": "...",
+	"webhook_url_console_logs": "...", 
 	"Gemini_API_KEY": "...",
 	"XProdiaKey": "...",
 	"Block_NSFW_Images": true
