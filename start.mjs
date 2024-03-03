@@ -69,8 +69,7 @@ function startBot() {
 	}
 
 	//impl later, for git pull inside of application
-	function gitpull() {
-	}
+
 	// Modify this line to start your bot with the correct command and arguments
 	bot = spawn("node", ["bot.js"], {
 		stdio: ["pipe", "pipe", "pipe", "pipe", "pipe", "pipe", process.stderr]
@@ -117,11 +116,24 @@ function stopBot() {
 
 // Function to restart the Discord bot.
 function restartBot() {
-	stopBot();
-	setTimeout(() => {
-		startBot();
-		writeToConsole(chalk.red("Bot restarted."));
-	}, 1000); // Delay restart to allow previous process to exit
+    stopBot();
+    const gitPull = spawn('git', ['pull']);
+
+    gitPull.stdout.on('data', (data) => {
+        writeToConsole(chalk.italic(`[GIT] stdout: ${data}`));
+    });
+
+    gitPull.stderr.on('data', (data) => {
+        writeToConsole(chalk.italic(`[GIT] stderr: ${data}`));
+    });
+
+    gitPull.on('close', (code) => {
+        writeToConsole(chalk.italic(`[GIT] child process exited with code ${code}`));
+        setTimeout(() => {
+            startBot();
+            writeToConsole(chalk.red("Bot restarted."));
+        }, 1000); 
+    });
 }
 
 // Function to refresh the console.
