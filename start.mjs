@@ -184,7 +184,7 @@ function updateStats() {
 
 		`${chalk.green("S")} - ${chalk.white("Start Bot")}\n` +
 		`${chalk.green("X")} - ${chalk.white("Stop Bot")}\n` +
-		`${chalk.green("R")} - ${chalk.white("Restart Bot")}\n` +
+		`${chalk.green("R")} - ${chalk.white("Restart & Update Bot")}\n` +
 		`${chalk.green("L")} - ${chalk.white("Refresh Console")}\n\n` +
 
 		`${chalk.red("Press")} ${chalk.white("Ctrl+C")} ${chalk.red("to stop the bot and exit.")}\n\n\n`
