@@ -13,7 +13,11 @@ module.exports = (client) => {
 
     function customLogger(type, ...messages) {
         const combinedMessage = messages.map(m => (typeof m === 'object' ? JSON.stringify(m, null, 2) : m)).join(' ');
-    
+        
+        if (combinedMessage === "By passing no model path, you're using the model hosted by Infinite.red - Please download and host the model before releasing this in production. See NSFWJS docs for instructions.") {
+            return;
+        }
+
         let messageToSend = combinedMessage;
         if (combinedMessage.length > 4083) {
             messageToSend = `${combinedMessage.slice(0, 4080)}...`;
