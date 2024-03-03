@@ -200,6 +200,9 @@ process.on("SIGINT", () => {
 	}, 1000);
 });
 
+// Start the bot when script is run initially.
+startBot();
+
 
 // Listen for keystrokes and map them to commands.
 screen.key(["S", "s"], () => {
