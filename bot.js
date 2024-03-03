@@ -67,7 +67,7 @@ for (const file of eventFiles) {
 client.slashCommands = new Collection();
 client.modalCommands = new Collection();
 client.cooldowns = new Collection();
-
+client.functions = new Collection();
 
 /**********************************************************************/
 // Registration of Slash-Command Interactions.
@@ -116,6 +116,25 @@ for (const module of modalCommands) {
 	}
 }
 
+/**********************************************************************/
+// Registration of Functions
+
+/**
+ * @type {String[]}
+ * @description All functions.
+ */
+
+const functionFiles = fs.readdirSync("./functions");
+
+// Loop through all files and store functions in functions collection.
+
+for (const functionFile of functionFiles) {
+    if (functionFile.endsWith(".js")) {
+        const func = require(`./functions/${functionFile}`);
+        client.functions.set(functionFile.replace('.js', ''), func);
+        func(client);
+    }
+}
 
 /**********************************************************************/
 // Registration of Slash-Commands in Discord API
