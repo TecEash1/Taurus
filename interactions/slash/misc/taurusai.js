@@ -4,7 +4,8 @@
  */
 
 const { SlashCommandBuilder, ModalBuilder, TextInputBuilder, TextInputStyle, ActionRowBuilder, EmbedBuilder } = require("discord.js");
-const { owner } = require("../../../config.json");
+
+const owner = JSON.parse(process.env.OWNER);
 
 const no_access = new EmbedBuilder()
 	.setDescription("**Only my developers can directly update my personality prompt!**\n\nIf you want to suggest a change, please let us know!")

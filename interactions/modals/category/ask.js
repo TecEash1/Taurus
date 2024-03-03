@@ -9,7 +9,7 @@
 const fs = require('fs').promises;
 const {  EmbedBuilder } = require("discord.js");
 const { GoogleGenerativeAI, HarmBlockThreshold, HarmCategory } = require("@google/generative-ai");
-const { Gemini_API_KEY } = require("../../../config.json"); 
+const Gemini_API_KEY = process.env.GEMINI_API_KEY;
 const genAI = new GoogleGenerativeAI(Gemini_API_KEY);
 
 

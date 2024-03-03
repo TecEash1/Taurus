@@ -8,7 +8,13 @@
  */
 
 const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
-const {XProdiaKey, Block_NSFW_Images} = require('../../../config.json')
+
+const XProdiaKey = process.env.XPRODIAKEY;
+let Block_NSFW_Images = process.env.BLOCK_NSFW_IMAGES;
+
+Block_NSFW_Images = Block_NSFW_Images === "false" ? false : true;
+
+
 const axios = require('axios');
 const tf = require('@tensorflow/tfjs-node');
 const nsfw = require('nsfwjs');
