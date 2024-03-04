@@ -61,14 +61,13 @@ let bot = null;
 let botStartTime = null;
 let botStatus = "Offline";
 
+
 // Function to start the Discord bot.
 function startBot() {
 	if (bot) {
 		writeToConsole(chalk.red("Bot is already running. Please stop the bot first."));
 		return;
 	}
-
-	//impl later, for git pull inside of application
 
 	// Modify this line to start your bot with the correct command and arguments
 	bot = spawn("node", ["bot.js"], {
