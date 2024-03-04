@@ -117,8 +117,8 @@ module.exports = {
                     return await interaction.editReply({ embeds: [ping_error] });
                 }
             }
-            responseText = responseText.replace(/(https?:\/\/[^\s]+)/g, "<$1>")
-            return await interaction.editReply({ content: response.text(), embeds: [] });
+            responseText = responseText.replace(/(https?:\/\/(?!media\.discordapp\.net\/attachments\/)[^\s\)]+)/g, "<$1>");
+            return await interaction.editReply({ content: responseText, embeds: [] });
             
         }
           
