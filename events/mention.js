@@ -14,7 +14,7 @@ const genAI = new GoogleGenerativeAI(Gemini_API_KEY);
 module.exports = {
     name: Events.MessageCreate,
 
-    async execute(message) {
+    async execute(message) {        
         if (message.author.bot || message.author.id === message.client.user.id) return;
         if (message.reference) return;
 
@@ -30,7 +30,7 @@ module.exports = {
         const regex = new RegExp(`^${botMention}\\s+\\w+`);
 
         if (!regex.test(message.content)) return;
-        
+
         const sendTypingInterval = setInterval(() => {
             message.channel.sendTyping();
         }, 5000);
@@ -80,6 +80,17 @@ module.exports = {
             },
         ];    
 
+        const user_status = message.member?.presence.clientStatus || {}
+        const status_devices = Object.entries(user_status)
+            .map(([platform, status]) => `${platform}: ${status}`)
+            .join("\n");
+    
+        parts1 = `${personalityLines}\n Please greet the user with a greeting and then their name which is: <@${message.author.id}>.`
+
+        if (Object.keys(user_status).length) {
+            parts1 += ` The user's presence is currently:\n${status_devices}`;
+        }
+
         async function run() {
             const generationConfig = {
                 maxOutputTokens: 750,
@@ -90,7 +101,7 @@ module.exports = {
                 history: [
                 {
                     role: "user",
-                    parts: `${personalityLines}\n Please greet the user with a greeting and then their name which is: <@${message.author.id}>.`,
+                    parts: parts1,
                 },
                 {
                     role: "model",

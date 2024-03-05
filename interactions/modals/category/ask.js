@@ -18,6 +18,8 @@ module.exports = {
     id: "taurus_ai",
 
     async execute(interaction) {
+        // console.log(interaction.member.presence.clientStatus || {})
+
         if (!Gemini_API_KEY || Gemini_API_KEY.length < 4) {
             invalid_api = new EmbedBuilder()
                 .setTitle("⚠️ Invalid API Key")
@@ -71,6 +73,17 @@ module.exports = {
             },
           ];
 
+        const user_status = interaction.member?.presence.clientStatus || {}
+        const status_devices = Object.entries(user_status)
+            .map(([platform, status]) => `${platform}: ${status}`)
+            .join("\n");
+      
+        parts1 = `${personalityLines}\n Please greet the user with a greeting and then their name which is: <@${interaction.user.id}>.`
+  
+        if (Object.keys(user_status).length) {
+            parts1 += ` The user's presence is currently:\n${status_devices}`;
+        }  
+
         async function run() {
             const generationConfig = {
                 maxOutputTokens: 750,
@@ -81,7 +94,7 @@ module.exports = {
                 history: [
                 {
                     role: "user",
-                    parts: `${personalityLines}\n Please greet the user with a greeting and then their name which is: <@${interaction.user.id}>.`,
+                    parts: parts1,
                 },
                 {
                     role: "model",
