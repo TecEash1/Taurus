@@ -123,6 +123,7 @@ module.exports = {
         }
 
         let submitted
+        let modal_error
 
         if (other) {
             switch(other){
@@ -158,13 +159,13 @@ module.exports = {
                     await interaction.showModal(personalise);
 
                     submitted = await interaction.awaitModalSubmit({
-                        time: 60000,
+                        time: 300000,
                         filter: i => i.user.id === interaction.user.id,
                       }).catch(error => {
-                        console.error(error)
-                        return null
+                        modal_error = true;
+                        return false
                       })
-                      
+                                                                
                       if (submitted) {
                         personalityPrompt = await submitted.fields.getTextInputValue("personalise_taurusai");
                         const personalityPrompt2 = await submitted.fields.getTextInputValue("personalise_taurusai2");
@@ -178,7 +179,8 @@ module.exports = {
                     }
             }
         }
-
+        
+        if (modal_error) return;
 
         success = new EmbedBuilder()
             .setDescription("✅ **Personality prompt updated successfully!**")
