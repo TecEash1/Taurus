@@ -30,8 +30,6 @@ const box = blessed.box({
 		}
 	}
 });
-// 
-
 
 // Create a console box at the top right.
 const consoleBox = blessed.box({
@@ -60,7 +58,6 @@ screen.append(consoleBox);
 let bot = null;
 let botStartTime = null;
 let botStatus = "Offline";
-
 
 // Function to start the Discord bot.
 function startBot() {
@@ -112,7 +109,6 @@ function stopBot() {
 	}, 1000);
 }
 
-
 // Function to restart the Discord bot.
 function restartBot() {
     stopBot();
@@ -142,7 +138,6 @@ function refreshConsole() {
 	screen.render();
 }
 
-
 let title = "";
 figlet.text("Taurus", {
 	font: "Standard",
@@ -158,7 +153,6 @@ figlet.text("Taurus", {
 	}
 	title = chalk.red(data); // Red
 });
-
 
 // Function to update the box content with system and bot stats
 function updateStats() {
@@ -235,7 +229,6 @@ screen.key(["L", "l"], () => {
 screen.key(["escape", "q", "C-c"], function(ch, key) {
 	return process.exit(0);
 });
-
 
 // Render the screen.
 screen.render();

@@ -18,8 +18,6 @@ module.exports = {
     id: "taurus_ai",
 
     async execute(interaction) {
-        // console.log(interaction.member.presence.clientStatus || {})
-
         if (!Gemini_API_KEY || Gemini_API_KEY.length < 4) {
             invalid_api = new EmbedBuilder()
                 .setTitle("⚠️ Invalid API Key")

@@ -14,7 +14,7 @@ const genAI = new GoogleGenerativeAI(Gemini_API_KEY);
 module.exports = {
     name: Events.MessageCreate,
 
-    async execute(message) {        
+    async execute(message) {
         if (message.author.bot || message.author.id === message.client.user.id) return;
         if (message.reference) return;
 
