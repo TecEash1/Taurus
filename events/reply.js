@@ -18,8 +18,9 @@ module.exports = {
     async execute(message) {
         if (message.author.bot || message.author.id === message.client.user.id) return;
         if (!message.reference) return;
+        if (message.type === 21) return;
 
-         if (!Gemini_API_KEY || Gemini_API_KEY.length < 4) {
+        if (!Gemini_API_KEY || Gemini_API_KEY.length < 4) {
              const invalid_api = new EmbedBuilder()
                  .setTitle("⚠️ Invalid API Key")
                  .setDescription("> **The API Key for Gemini is invalid or not provided.**")
