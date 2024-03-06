@@ -1,13 +1,12 @@
 /**
- * @file TaurusAI Reply 
+ * @file TaurusAI Events
  * @author TechyGiraffe999
  */
 
-// Declares constants (destructured) to be used in this file.
 
-const { Events, EmbedBuilder } = require("discord.js");
-const path = require('path');
+const { Collection, ChannelType, Events, EmbedBuilder } = require("discord.js");
 const fs = require('fs').promises;
+const path = require('path');
 const { GoogleGenerativeAI, HarmBlockThreshold, HarmCategory } = require("@google/generative-ai");
 const { Gemini_API_KEY } = require("../config.json"); 
 const genAI = new GoogleGenerativeAI(Gemini_API_KEY);
@@ -17,47 +16,54 @@ module.exports = {
 
     async execute(message) {
         if (message.author.bot || message.author.id === message.client.user.id) return;
-        if (!message.reference) return;
         if (message.type === 21) return;
 
         if (!Gemini_API_KEY || Gemini_API_KEY.length < 4) {
-             const invalid_api = new EmbedBuilder()
-                 .setTitle("⚠️ Invalid API Key")
-                 .setDescription("> **The API Key for Gemini is invalid or not provided.**")
-                 .setColor("Red")
-             return message.reply({ embeds: [invalid_api] });
-        }
-            
-        const originalMessage = await message.channel.messages.fetch(message.reference.messageId);
-        
-        if (originalMessage.author.id !== message.client.user.id) {
-            return;
+            invalid_api = new EmbedBuilder()
+                .setTitle("⚠️ Invalid API Key")
+                .setDescription("> **The API Key for Gemini is invalid or not provided.**")
+                .setColor("Red")
+            return message.reply({ embeds: [invalid_api] });
         }
 
+        let userQuestion
         let threadMessages = [];
-        if (originalMessage.author.id === message.client.user.id) {
-            let currentMessage = message;
+
+        if (message.reference) {
+            const originalMessage = await message.channel.messages.fetch(message.reference.messageId);
         
-            while (currentMessage.reference) {
-                currentMessage = await message.channel.messages.fetch(currentMessage.reference.messageId);
-                const sender = currentMessage.author.id === message.client.user.id ? 'model' : 'user';
-                let content = currentMessage.content;
-                if (sender === 'user') {
-                    content = content.replace(/<@\d+>\s*/, ''); 
-                }
-                threadMessages.unshift({ role: sender, parts: content });
-            }
-        }
+            if (originalMessage.author.id !== message.client.user.id) return;
+
+            if (originalMessage.author.id === message.client.user.id) {
+                let currentMessage = message;
             
+                while (currentMessage.reference) {
+                    currentMessage = await message.channel.messages.fetch(currentMessage.reference.messageId);
+                    const sender = currentMessage.author.id === message.client.user.id ? 'model' : 'user';
+                    let content = currentMessage.content;
+                    if (sender === 'user') {
+                        content = content.replace(/<@\d+>\s*/, ''); 
+                    }
+                    threadMessages.unshift({ role: sender, parts: content });
+                }
+            }
+            userQuestion = message.content
 
-        const userQuestion = message.content
-
+        } else if (!message.reference) {
+            const botMention = `<@${message.client.user.id}>`;
+            const regex = new RegExp(`^${botMention}\\s+.+`);
         
+            if (!regex.test(message.content)) return;   
+        
+            userQuestion = message.content
+                .replace(botMention, "")
+                .trim();
+        }
+
+        const user =  message.author;
         const sendTypingInterval = setInterval(() => {
             message.channel.sendTyping();
         }, 5000);
-
-        const user =  message.author;
 
         const loadingEmbed = new EmbedBuilder()
             .setTitle("**⌛Loading your response**")
@@ -138,6 +144,7 @@ module.exports = {
                 maxOutputTokens: 750,
                 },
             });
+
             const result = await chat.sendMessage(userQuestion);
             const response = await result.response;
             
@@ -207,5 +214,6 @@ module.exports = {
                     });
                 }
             }
-        }
-    }
+
+    },
+};
