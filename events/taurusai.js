@@ -168,7 +168,8 @@ module.exports = {
                     return await loadingMsg.edit({ embeds: [ping_error] });
                 }
             }
-            responseText = responseText.replace(/(https?:\/\/(?!media\.discordapp\.net\/attachments\/)[^\s\)]+)/g, "<$1>");
+             
+            responseText = responseText.replace(/(?!<)(https?:\/\/(?!media\.discordapp\.net\/attachments\/)[^\s\)]+)/gi,"<$1>");
             return await loadingMsg.edit({ content: responseText, embeds: [] });
         }
           
