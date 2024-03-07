@@ -18,10 +18,10 @@ module.exports = (client) => {
         }
 
         let messageToSend = combinedMessage;
-        if (combinedMessage.length > 4083) {
-            messageToSend = `${combinedMessage.slice(0, 4080)}...`;
+        if (combinedMessage.length > 4070) { 
+            messageToSend = `${combinedMessage.slice(0, 4067)}...`; 
         }
-
+        
         const embed = new EmbedBuilder() 
             .setDescription(`\`\`\`console\n${messageToSend}\`\`\``)
             .setColor(0x3498DB) 

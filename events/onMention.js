@@ -19,7 +19,7 @@ module.exports = {
 			message.content == `<@!${client.user.id}>`
 		) {
 			const bot_message = new EmbedBuilder()
-				.setDescription(`Hi ${message.author}! I am Taurus. Chat to me by mentioning me and typing your message! Or alternatively run \`/taurus:ask\`!`)
+				.setDescription(`Hi ${message.author}! I am Taurus. Chat to me by mentioning me and typing your message! Or alternatively run \`/taurus\`!`)
 				.setColor("Gold");
 
 			return message.reply({embeds: [bot_message]});

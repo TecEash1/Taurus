@@ -24,6 +24,8 @@ module.exports = {
 
 		if (!interaction.isModalSubmit()) return;
 
+        if (interaction.customId === 'taurus_ai_personality') return;
+
 		const command = client.modalCommands.get(interaction.customId);
 
 		// If the interaction is not a command in cache, return error message.

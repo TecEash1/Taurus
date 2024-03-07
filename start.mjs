@@ -30,8 +30,6 @@ const box = blessed.box({
 		}
 	}
 });
-// 
-
 
 // Create a console box at the top right.
 const consoleBox = blessed.box({
@@ -67,8 +65,6 @@ function startBot() {
 		writeToConsole(chalk.red("Bot is already running. Please stop the bot first."));
 		return;
 	}
-
-	//impl later, for git pull inside of application
 
 	// Modify this line to start your bot with the correct command and arguments
 	bot = spawn("node", ["bot.js"], {
@@ -113,7 +109,6 @@ function stopBot() {
 	}, 1000);
 }
 
-
 // Function to restart the Discord bot.
 function restartBot() {
     stopBot();
@@ -143,7 +138,6 @@ function refreshConsole() {
 	screen.render();
 }
 
-
 let title = "";
 figlet.text("Taurus", {
 	font: "Standard",
@@ -159,7 +153,6 @@ figlet.text("Taurus", {
 	}
 	title = chalk.red(data); // Red
 });
-
 
 // Function to update the box content with system and bot stats
 function updateStats() {
@@ -184,7 +177,7 @@ function updateStats() {
 
 		`${chalk.green("S")} - ${chalk.white("Start Bot")}\n` +
 		`${chalk.green("X")} - ${chalk.white("Stop Bot")}\n` +
-		`${chalk.green("R")} - ${chalk.white("Restart Bot")}\n` +
+		`${chalk.green("R")} - ${chalk.white("Restart & Update Bot")}\n` +
 		`${chalk.green("L")} - ${chalk.white("Refresh Console")}\n\n` +
 
 		`${chalk.red("Press")} ${chalk.white("Ctrl+C")} ${chalk.red("to stop the bot and exit.")}\n\n\n`
@@ -236,7 +229,6 @@ screen.key(["L", "l"], () => {
 screen.key(["escape", "q", "C-c"], function(ch, key) {
 	return process.exit(0);
 });
-
 
 // Render the screen.
 screen.render();
