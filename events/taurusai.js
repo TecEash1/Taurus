@@ -169,7 +169,7 @@ module.exports = {
                 }
             }
              
-            responseText = responseText.replace(/(?!<)(https?:\/\/(?!media\.discordapp\.net\/attachments\/)[^\s\)]+)/gi,"<$1>");
+            responseText = responseText.replace(/(?<!<\s*)(https?:\/\/(?!media\.discordapp\.net\/attachments\/|discord\.com\/channels\/)[^\s\*\)]+)/gi,"<$1>");
             return await loadingMsg.edit({ content: responseText, embeds: [] });
         }
           
