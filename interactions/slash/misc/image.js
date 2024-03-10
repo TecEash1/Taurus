@@ -15,6 +15,7 @@ let Block_NSFW_Images = process.env.BLOCK_NSFW_IMAGES;
 Block_NSFW_Images = Block_NSFW_Images === "false" ? false : true;
 
 
+const translate = require("@iamtraction/google-translate");
 const axios = require('axios');
 const tf = require('@tensorflow/tfjs-node');
 const nsfw = require('nsfwjs');
@@ -113,16 +114,19 @@ module.exports = {
 
     await interaction.deferReply();
 
-    const prompt = interaction.options.getString('prompt');
     const style_preset = interaction.options.getString('style-preset');
     const steps = interaction.options.getInteger('steps');
     const cfg_scale = interaction.options.getInteger('cfg-scale');
     const seed = interaction.options.getInteger('seed');
     const sampler = interaction.options.getString('sampler');
 
+    let prompt = interaction.options.getString('prompt');
     let negative_prompt = interaction.options.getString('negative-prompt');
     let model = interaction.options.getString('model');
     
+    prompt = (await translate(prompt, { to: 'en' })).text;
+    negative_prompt = (await translate(negative_prompt, { to: 'en' })).text;
+
     const nsfw_embed = new EmbedBuilder()
     .setDescription(`**⚠️ NSFW content detected!**`)
     .setColor('Red');
