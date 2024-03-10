@@ -11,7 +11,10 @@ const { SlashCommandBuilder, ModalBuilder, TextInputBuilder, TextInputStyle, Act
 const axios = require('axios');
 const fs = require('fs').promises;
 const path = require('path');
-const {guild_id_logs, channel_id_logs, owner} = require("../../../config.json");
+
+const owner = JSON.parse(process.env.OWNER);
+const guild_id_logs = process.env.GUILD_ID_LOGS;
+const channel_id_logs = process.env.CHANNEL_ID_LOGS;
 
 const serverId = guild_id_logs;
 const channelId = channel_id_logs;

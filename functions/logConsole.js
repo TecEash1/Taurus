@@ -1,7 +1,6 @@
 module.exports = (client) => {
     const { WebhookClient, EmbedBuilder } = require('discord.js');
-    const {webhook_url_console_logs} = require('../config.json');
-    const webhookURL = webhook_url_console_logs;
+    const webhookURL = process.env.WEBHOOK_URL_CONSOLE_LOGS;
 
     let webhookClient;
     try {

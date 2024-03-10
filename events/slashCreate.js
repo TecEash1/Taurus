@@ -6,8 +6,9 @@
  * @version 3.4.0
  */
 
-const { Collection, EmbedBuilder, Events } = require("discord.js"),
-{ owner } = require("../config.json");
+const { Collection, EmbedBuilder, Events } = require("discord.js");
+const owner = JSON.parse(process.env.OWNER)
+
 
 module.exports = {
 	name: Events.InteractionCreate,

@@ -5,7 +5,6 @@
 
 const { SlashCommandBuilder, ModalBuilder, TextInputBuilder, TextInputStyle, ActionRowBuilder, EmbedBuilder } = require("discord.js");
 
-
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('taurus')

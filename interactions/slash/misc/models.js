@@ -8,8 +8,8 @@
  */
 
 const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
-const {XProdiaKey} = require('../../../config.json')
 
+const XProdiaKey = process.env.XPRODIAKEY;
 
 module.exports = {
   data: new SlashCommandBuilder()
