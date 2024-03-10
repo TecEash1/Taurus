@@ -1,6 +1,6 @@
 {
 	"name": "taurus",
-	"version": "2.0",
+	"version": "3.0",
 	"description": "An AI Discord Bot!",
 	"types": "./typings.d.ts",
 	"main": "bot.js",
@@ -24,6 +24,7 @@
 	},
 	"dependencies": {
 		"@google/generative-ai": "^0.2.1",
+		"@iamtraction/google-translate": "^2.0.1",
 		"@tensorflow/tfjs-node": "^4.17.0",
 		"api": "^6.1.1",
 		"axios": "^1.6.7",
