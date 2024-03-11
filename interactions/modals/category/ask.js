@@ -41,9 +41,7 @@ module.exports = {
             .setDescription("*TaurusAI may display innacurate/offensive info.*\n\n> *I am powered by Google's Generative AI, [Gemini](https://gemini.google.com) and was integrated by <@719815864135712799>.*")
             .setFooter({text: "⏳ This may take a while", iconURL: interaction.user.displayAvatarURL()})
             .setTimestamp()
-        const loadingMsg = await interaction.reply({ embeds: [loadingEmbed]
-            //, ephemeral: true 
-        });
+        const loadingMsg = await interaction.reply({ embeds: [loadingEmbed] });
         const loadingDots = [""," .  ", " . . ", " . . ."];
         let i = 0;
         const loadingInterval = setInterval(async () => {
@@ -69,7 +67,7 @@ module.exports = {
                 category: HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT,
                 threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE,
             },
-          ];
+        ];
 
         const user_status = interaction.member?.presence.clientStatus || {}
         const status_devices = Object.entries(user_status)
@@ -143,7 +141,7 @@ module.exports = {
                 case "[GoogleGenerativeAI Error]: Text not available. Response was blocked due to SAFETY":
                     const safety_error = new EmbedBuilder()
                     .setTitle("⚠️ An Error Occurred")
-                    .setDescription("> *The response was blocked due to **SAFETY**.*")
+                    .setDescription("> *The response was blocked due to **SAFETY**.* \n- *Result based on your input. Safety Blocking may not be 100% correct.*")
                     .setColor("Red")
 
                     return await interaction.editReply({ embeds: [safety_error]});

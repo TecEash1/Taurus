@@ -101,7 +101,7 @@ module.exports = {
                 category: HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT,
                 threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE,
             },
-          ];
+        ];
 
         const user_status = message.member?.presence.clientStatus || {}
         const status_devices = Object.entries(user_status)
@@ -183,7 +183,7 @@ module.exports = {
                 case "[GoogleGenerativeAI Error]: Text not available. Response was blocked due to SAFETY":
                     const safety_error = new EmbedBuilder()
                     .setTitle("⚠️ An Error Occurred")
-                    .setDescription("> *The response was blocked due to **SAFETY**.*")
+                    .setDescription("> *The response was blocked due to **SAFETY**.* \n- *Result based on your input. Safety Blocking may not be 100% correct.*")
                     .setColor("Red")
 
                     return await loadingMsg.edit({ embeds: [safety_error]});
