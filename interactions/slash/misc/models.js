@@ -37,24 +37,25 @@ module.exports = {
 
     sdk.auth(XProdiaKey);
 
-    try{
-      const {data} = await sdk.listModels();
-       choices = JSON.parse(data);
-    } catch (e) {
-      return interaction.followUp({embeds: [error]});
+    async function fetchAndFormatModels(apiMethod) {
+      try {
+        const { data } = await apiMethod();
+        const models = JSON.parse(data);
+        return "```\n- " + models.join("\n- ") + "\n```";
+      } catch (e) {
+        return interaction.followUp({embeds: [error]});
+      }
     }
-  
+    
+    const choices_string = await fetchAndFormatModels(sdk.listModels);
+    const sdxlChoices_string = await fetchAndFormatModels(sdk.listSdxlModels);
 
-    const choices_string = "```\n- " + choices.join("\n- ") + "\n```";
-        
     const models = new EmbedBuilder()
       .setTitle('🖼️ Available Models')
-      .setDescription(choices_string)
+      .setDescription(`**\n🌟 SD Models:**\n\n ${choices_string}\n\n**🚀 SDXL Models:**\n\n ${sdxlChoices_string}`)
       .setColor('Random')
 
     return interaction.followUp({embeds: [models]});
-
-
   },
 };
 
