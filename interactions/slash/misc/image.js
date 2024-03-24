@@ -25,7 +25,7 @@ module.exports = {
     .setName('image')
     .setDescription('Have AI generate an image!')
     .addStringOption(o => o.setName('prompt').setDescription('The description of the image to generate!').setRequired(true))
-    .addStringOption(o => o.setName('model').setDescription('The Model to Use'))
+    .addStringOption(o => o.setName('model').setDescription('The Model to Use').setAutocomplete(true))
     .addStringOption(o => o.setName('negative-prompt').setDescription('The Negative Prompt to Use'))
     .addIntegerOption(option =>
       option.setName("steps")
@@ -169,18 +169,25 @@ module.exports = {
 
     sdk.auth(XProdiaKey);
 
-    try{
-      const {data} = await sdk.listModels();
-       choices = JSON.parse(data);
-    } catch (e) {
-      return interaction.followUp({embeds: [error]});
+    async function fetchModels(apiMethod) {
+      try {
+        const { data } = await apiMethod();
+        return JSON.parse(data);
+      } catch (e) {
+        return interaction.followUp({embeds: [error]});
+      }
     }
-
-    if (model && !choices.includes(model)) {
+    
+    const choices = await fetchModels(sdk.listModels);
+    const sdxlChoices = await fetchModels(sdk.listSdxlModels);
+    
+    const allModels = [...choices, ...sdxlChoices];
+    
+    if (model && !allModels.includes(model)) {
       const no_model = new EmbedBuilder()
         .setDescription(`**${model}** is not a valid model!\n\n> Run \`/models\` to see the available models!`)
         .setColor('Red');
-
+    
       return interaction.followUp({embeds: [no_model]});
     }
     
@@ -202,7 +209,8 @@ module.exports = {
 
 
     try{
-      sdk.generate(generateParams)
+      const generateMethod = sdxlChoices.includes(model) ? sdk.sdxlGenerate : sdk.generate;
+      generateMethod(generateParams)
       .then(({ data }) => {
         const jobId = data.job;
         const intervalId = setInterval(() => {
