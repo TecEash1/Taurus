@@ -17,7 +17,7 @@ const genAI = new GoogleGenerativeAI(Gemini_API_KEY);
 
 module.exports = {
 	data: {
-		name: "TaurusAI",
+		name: "Taurus",
 		type: 3 
 	},
 
@@ -59,7 +59,7 @@ module.exports = {
         }, 2000);
 
 
-        const personalityFilePath = path.join(__dirname, '../../../../personality.txt');
+        const personalityFilePath = path.join(__dirname + '../../../../personality.txt');
         const personalityContent = await fs.readFile(personalityFilePath, 'utf-8');
         const personalityLines = personalityContent.split('\n');
 
