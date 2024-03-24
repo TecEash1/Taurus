@@ -19,7 +19,7 @@ module.exports = {
     .setName('image')
     .setDescription('Have AI generate an image!')
     .addStringOption(o => o.setName('prompt').setDescription('The description of the image to generate!').setRequired(true))
-    .addStringOption(o => o.setName('model').setDescription('The Model to Use'))
+    .addStringOption(o => o.setName('model').setDescription('The Model to Use').setAutocomplete(true))
     .addStringOption(o => o.setName('negative-prompt').setDescription('The Negative Prompt to Use'))
     .addIntegerOption(option =>
       option.setName("steps")

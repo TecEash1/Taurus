@@ -69,6 +69,7 @@ client.slashCommands = new Collection();
 client.modalCommands = new Collection();
 client.contextCommands = new Collection();
 client.cooldowns = new Collection();
+client.autocompleteInteractions = new Collection();
 client.functions = new Collection();
 
 /**********************************************************************/
@@ -91,6 +92,29 @@ for (const module of slashCommands) {
 	for (const commandFile of commandFiles) {
 		const command = require(`./interactions/slash/${module}/${commandFile}`);
 		client.slashCommands.set(command.data.name, command);
+	}
+}
+
+/**********************************************************************/
+// Registration of Autocomplete Interactions.
+
+/**
+ * @type {String[]}
+ * @description All autocomplete interactions.
+ */
+
+const autocompleteInteractions = fs.readdirSync("./interactions/autocomplete");
+
+// Loop through all files and store autocomplete interactions in autocompleteInteractions collection.
+
+for (const module of autocompleteInteractions) {
+	const files = fs
+		.readdirSync(`./interactions/autocomplete/${module}`)
+		.filter((file) => file.endsWith(".js"));
+
+	for (const interactionFile of files) {
+		const interaction = require(`./interactions/autocomplete/${module}/${interactionFile}`);
+		client.autocompleteInteractions.set(interaction.name, interaction);
 	}
 }
 
