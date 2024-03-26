@@ -15,7 +15,8 @@ const {
 	GatewayIntentBits,
 	Partials,
 	REST,
-	Routes
+	Routes,
+	SlashCommandBuilder
 } = require("discord.js");
 const { token, client_id } = require("./config.json");
 
@@ -191,8 +192,18 @@ for (const functionFile of functionFiles) {
 const rest = new REST({ version: "9" }).setToken(token);
 
 const commandJsonData = [
-	...Array.from(client.slashCommands.values()).map((c) => c.data.toJSON()),
-	...Array.from(client.contextCommands.values()).map((c) => c.data)
+    ...Array.from(client.slashCommands.values()).map((c) => {
+        const commandData = c.data instanceof SlashCommandBuilder ? c.data.toJSON() : c.data;
+        commandData.integration_types = [1];
+        commandData.contexts = [0, 1, 2];
+        return commandData;
+    }),
+	...Array.from(client.contextCommands.values()).map((c) => {
+        const commandData = c.data;
+        commandData.integration_types = [1];
+        commandData.contexts = [0, 1, 2];
+        return commandData;
+    })
 ];
 
 (async () => {
