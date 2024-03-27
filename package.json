@@ -23,7 +23,7 @@
 		"url": "https://github.com/TecEash1/Taurus/issues"
 	},
 	"dependencies": {
-		"@google/generative-ai": "^0.2.1",
+		"@google/generative-ai": "^0.3.1",
 		"@iamtraction/google-translate": "^2.0.1",
 		"@tensorflow/tfjs-node": "^4.17.0",
 		"api": "^6.1.1",

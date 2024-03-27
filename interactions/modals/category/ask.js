@@ -90,11 +90,11 @@ module.exports = {
                 history: [
                 {
                     role: "user",
-                    parts: parts1,
+                    parts: [{text: parts1}],
                 },
                 {
                     role: "model",
-                    parts: `I will greet the user with their name: <@${interaction.user.id}>. I will also limit all of my responses to 2000 characters or less, regardless of what you say. Feel feel free to ask me anything! 😊`,
+                    parts: [{text: `I will greet the user with their name: <@${interaction.user.id}>. I will also limit all of my responses to 2000 characters or less, regardless of what you say. Feel feel free to ask me anything! 😊`}],
                 },
                 ],
                 generationConfig: {
