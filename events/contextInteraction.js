@@ -55,7 +55,7 @@ module.exports = {
 			try {
 				return await command.execute(interaction);
 			} catch (err) {
-				console.error(err);
+				console.dir(err, { showHidden: true });
 				await interaction.reply({
 					content: "There was an issue while executing that context command! If the issue persists please contact the bot owners.",
 					ephemeral: true

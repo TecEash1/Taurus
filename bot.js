@@ -228,10 +228,20 @@ client.login(token);
 
 /**********************************************************************/
 // Anti Crash script
-
-process.on("unhandRejection", (reason, promise) => {
+process.on("unhandledRejection", (reason, promise) => {
 	console.error(`🚫 Critical Error detected:\n\n`, reason, promise);
+
+	// Uncomment the below lines below to see the full error details. - ADVANCED DEBUGGING //
+
+    // console.dir(reason, { showHidden: true, depth: null });
+    // console.log("Promise: ", promise);
 });
+
 process.on("uncaughtException", (error, origin) => {
 	console.error(`🚫 Critical Error detected:\n\n`, error, origin);
+	
+	// Uncomment the below lines below to see the full error details. - ADVANCED DEBUGGING //
+
+    // console.dir(error, { showHidden: true, depth: null });
+    // console.log("Origin: ", origin);
 });

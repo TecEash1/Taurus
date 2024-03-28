@@ -42,10 +42,13 @@ module.exports = {
 		let cooldownAmount = command.cooldown ?? defaultCooldownDuration;
 
 		if (interaction.inGuild()) {
-			allowedRoleIds = ["...", "..."];
-			if (interaction.member.roles.cache.some(role => allowedRoleIds.includes(role.id))) {
-				const cooldownPercentage = 0.5;
-				cooldownAmount = Math.floor(cooldownAmount * cooldownPercentage);
+			const botGuilds = interaction.client.guilds.cache;
+			if (botGuilds.has(interaction.guildId)) {
+				allowedRoleIds = ["...", "..."];
+				if (interaction.member.roles.cache.some(role => allowedRoleIds.includes(role.id))) {
+					const cooldownPercentage = 0.5;
+					cooldownAmount = Math.floor(cooldownAmount * cooldownPercentage);
+				}
 			}
 		}
 

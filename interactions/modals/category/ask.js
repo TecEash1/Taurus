@@ -32,9 +32,9 @@ module.exports = {
 
         const userQuestion = interaction.fields.getTextInputValue("question_taurusai");
 
-        const sendTypingInterval = setInterval(() => {
-            interaction.channel.sendTyping();
-        }, 5000);
+        let sendTypingInterval = interaction.inGuild() && interaction.client.guilds.cache.has(interaction.guildId)
+            ? setInterval(() => interaction.channel.sendTyping(), 5000)
+            : null;
 
         const loadingEmbed = new EmbedBuilder()
             .setTitle("**Loading your response . . .**")
@@ -69,7 +69,10 @@ module.exports = {
             },
         ];
 
-        const user_status = interaction.member?.presence.clientStatus || {}
+        const user_status = interaction.inGuild() && interaction.client.guilds.cache.has(interaction.guildId)
+            ? interaction.member?.presence.clientStatus
+            : {};
+
         const status_devices = Object.entries(user_status)
             .map(([platform, status]) => `${platform}: ${status}`)
             .join("\n");
@@ -135,8 +138,7 @@ module.exports = {
             await run();
         } catch (err) {
             clearInterval(loadingInterval);
-            clearInterval(sendTypingInterval);
-
+            sendTypingInterval && clearInterval(sendTypingInterval);
             switch (err.message) {
                 case "[GoogleGenerativeAI Error]: Text not available. Response was blocked due to SAFETY":
                     const safety_error = new EmbedBuilder()
