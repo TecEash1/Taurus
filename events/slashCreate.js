@@ -7,6 +7,7 @@
  */
 
 const { Collection, EmbedBuilder, Events } = require("discord.js"),
+{ botInGuild } = require("../utils"),
 { owner } = require("../config.json");
 
 module.exports = {
@@ -42,8 +43,7 @@ module.exports = {
 		let cooldownAmount = command.cooldown ?? defaultCooldownDuration;
 
 		if (interaction.inGuild()) {
-			const botGuilds = interaction.client.guilds.cache;
-			if (botGuilds.has(interaction.guildId)) {
+			if (botInGuild(interaction)) {
 				allowedRoleIds = ["...", "..."];
 				if (interaction.member.roles.cache.some(role => allowedRoleIds.includes(role.id))) {
 					const cooldownPercentage = 0.5;

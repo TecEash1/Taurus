@@ -4,11 +4,12 @@
  */
 
 
-const { Collection, ChannelType, Events, EmbedBuilder } = require("discord.js");
+const { Events, EmbedBuilder } = require("discord.js");
 const fs = require('fs').promises;
 const path = require('path');
-const { GoogleGenerativeAI, HarmBlockThreshold, HarmCategory } = require("@google/generative-ai");
+const { GoogleGenerativeAI } = require("@google/generative-ai");
 const { Gemini_API_KEY } = require("../config.json"); 
+const { safetySettings, handleGeminiError, handleResponse, checkGeminiApiKey, fetchThreadMessages } = require("../utils");
 const genAI = new GoogleGenerativeAI(Gemini_API_KEY);
 
 module.exports = {
@@ -18,43 +19,20 @@ module.exports = {
         if (message.author.bot || message.author.id === message.client.user.id) return;
         if (message.type === 21) return;
 
-        if (!Gemini_API_KEY || Gemini_API_KEY.length < 4) {
-            invalid_api = new EmbedBuilder()
-                .setTitle("⚠️ Invalid API Key")
-                .setDescription("> **The API Key for Gemini is invalid or not provided.**")
-                .setColor("Red")
-            return message.reply({ embeds: [invalid_api] });
-        }
-
         let userQuestion
         let threadMessages = [];
 
         if (message.reference) {
-            const originalMessage = await message.channel.messages.fetch(message.reference.messageId);
-        
-            if (originalMessage.author.id !== message.client.user.id) return;
-
-            if (originalMessage.author.id === message.client.user.id) {
-                let currentMessage = message;
-            
-                while (currentMessage.reference) {
-                    currentMessage = await message.channel.messages.fetch(currentMessage.reference.messageId);
-                    const sender = currentMessage.author.id === message.client.user.id ? 'model' : 'user';
-                    let content = currentMessage.content;
-                    if (sender === 'user') {
-                        content = content.replace(/<@\d+>\s*/, ''); 
-                    }
-                    threadMessages.unshift({ role: sender, parts: content });
-                }
-            }
-            userQuestion = message.content
-
+            const { userQuestion: fetchedUserQuestion, threadMessages: fetchedThreadMessages } = await fetchThreadMessages(Gemini_API_KEY, message);
+            if (fetchedUserQuestion === null && fetchedThreadMessages === null) return;
+            threadMessages = fetchedThreadMessages;
+            userQuestion = fetchedUserQuestion
         } else if (!message.reference) {
             const botMention = `<@${message.client.user.id}>`;
             const regex = new RegExp(`^${botMention}\\s+.+`);
         
-            if (!regex.test(message.content)) return;   
-        
+            if (!regex.test(message.content)) return;
+            if (await checkGeminiApiKey(Gemini_API_KEY, false, message)) return;
             userQuestion = message.content
                 .replace(botMention, "")
                 .trim();
@@ -79,35 +57,15 @@ module.exports = {
             i = (i + 1) % loadingDots.length;
         }, 2000);
 
-        const personalityFilePath = path.join(__dirname, '../personality.txt');
-        const personalityContent = await fs.readFile(personalityFilePath, 'utf-8');
-        const personalityLines = personalityContent.split('\n');
-
-
-        const safetySettings = [
-            {
-              category: HarmCategory.HARM_CATEGORY_HARASSMENT,
-              threshold: HarmBlockThreshold.BLOCK_ONLY_HIGH,
-            },
-            {
-                category: HarmCategory.HARM_CATEGORY_HATE_SPEECH,
-                threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE,
-            },
-            {
-                category: HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT,
-                threshold: HarmBlockThreshold.BLOCK_LOW_AND_ABOVE,
-            },
-            {
-                category: HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT,
-                threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE,
-            },
-        ];
-
         const user_status = message.member?.presence.clientStatus || {}
         const status_devices = Object.entries(user_status)
             .map(([platform, status]) => `${platform}: ${status}`)
             .join("\n");
       
+        const personalityFilePath = path.join(__dirname, '../personality.txt');
+        const personalityContent = await fs.readFile(personalityFilePath, 'utf-8');
+        const personalityLines = personalityContent.split('\n');    
+
         parts1 = `${personalityLines}\n Please greet the user with a greeting and then their name which is: <@${message.author.id}>.`
   
         if (Object.keys(user_status).length) {
@@ -118,8 +76,13 @@ module.exports = {
             const generationConfig = {
                 maxOutputTokens: 750,
             };
-            const model = genAI.getGenerativeModel({ model: "gemini-pro", safetySettings, generationConfig}); 
 
+            const model = genAI.getGenerativeModel({ model: "gemini-1.5-pro-latest" }, {
+                apiVersion: 'v1beta',
+                safetySettings,
+                generationConfig
+            });
+            
             var history = [
                 {
                     role: "user",
@@ -131,90 +94,32 @@ module.exports = {
                 },
             ];
             
-            if (history.length > 0 && threadMessages.length > 0 && history[history.length - 1].role === 'model' && threadMessages[0].role === 'model') {
-                history[history.length - 1].parts += threadMessages[0].parts;
+            if (history.length > 0 && threadMessages && threadMessages.length > 0 && history[history.length - 1].role === 'model' && threadMessages[0].role === 'model' && Array.isArray(history[history.length - 1].parts) && Array.isArray(threadMessages[0].parts)) {
+                history[history.length - 1].parts = history[history.length - 1].parts.concat(threadMessages[0].parts);                
                 threadMessages.shift();
             }
-            
-            history = history.concat(threadMessages);
-                
+            history.push(...threadMessages);     
+                       
             const chat = model.startChat({
                 history,
                 generationConfig: {
                 maxOutputTokens: 750,
                 },
             });
-
-            const result = await chat.sendMessage(userQuestion);
-            const response = await result.response;
             
-            const responseLength = response.text().length;
-            if (responseLength > 2000) {
-              response.text = response.text().substring(0, 1928 - "... \n\n".length) + "... \n\n*Response was cut short due to Discords character limit of 2000*";
-            }
-            clearInterval(loadingInterval);
-            clearInterval(sendTypingInterval);
-
-            let responseText = response.text();
-            const regex = /<@&?\d+>/g;
-            let match;
-
-            while ((match = regex.exec(responseText)) !== null) {
-                if (match[0] !== `<@${message.author.id}>`) {
-                    const ping_error = new EmbedBuilder()
-                        .setTitle("⚠️ Response Cannot Be Sent")
-                        .setDescription("> *The generated message contains a mention of a Role or different User to the one that sent the original message/command.*")
-                        .setColor("Red")
-                    return await loadingMsg.edit({ embeds: [ping_error] });
-                }
-            }
-             
-            responseText = responseText.replace(/(?<!<\s*)(https?:\/\/(?!media\.discordapp\.net\/attachments\/|discord\.com\/channels\/)[^\s\*\)]+)/gi,"<$1>");
-            return await loadingMsg.edit({ content: responseText, embeds: [] });
+        clearInterval(loadingInterval);
+        clearInterval(sendTypingInterval);
+        await handleResponse(chat, userQuestion, false, message, loadingMsg)
         }
           
         try{
             await run();
         } catch (err) {
             clearInterval(loadingInterval);
-            clearInterval(sendTypingInterval);
-
-            switch (err.message) {
-                case "[GoogleGenerativeAI Error]: Text not available. Response was blocked due to SAFETY":
-                    const safety_error = new EmbedBuilder()
-                    .setTitle("⚠️ An Error Occurred")
-                    .setDescription("> *The response was blocked due to **SAFETY**.* \n- *Result based on your input. Safety Blocking may not be 100% correct.*")
-                    .setColor("Red")
-
-                    return await loadingMsg.edit({ embeds: [safety_error]});
-
-                case "[GoogleGenerativeAI Error]: Error fetching from https://generativelanguage.googleapis.com/v1/models/gemini-pro:generateContent: [400 Bad Request] User location is not supported for the API use.":
-                    const location_error = new EmbedBuilder()
-                    .setTitle("⚠️ An Error Occurred")
-                    .setDescription("> *The user location is not supported for Gemini API use. Please contact the Developers.*")
-                    .setColor("Red")
-
-                    return await loadingMsg.edit({ embeds: [location_error]});
-
-                case "Cannot send an empty message":
-                case "response.text is not a function":
-                    const error = new EmbedBuilder()
-                        .setTitle("⚠️ An Error Occurred")
-                        .setDescription("An error occurred while processing your request. Please try again later, or in a few minutes. \n*If this issue persists, please contact the Developers.* \n\n> - Generated response may be too long. *(Fix this by specifying for the generated response to be smaller, e.g. 10 Lines)*\n> - Token Limit for this minute may have been reached.")
-                        .setColor("Red")
-
-                    return await loadingMsg.edit({ embeds: [error]});
-
-                default:
-                    const error_unknown = new EmbedBuilder()
-                        .setTitle("⚠️ An Error Occurred")
-                        .setDescription("An unknown error occurred while processing your request. Please try again later, or in a few minutes. \n*If this issue persists, please contact the Developers*\n> - Token Limit for this minute may have been reached.")
-                        .setColor("Red")
-
-                    await loadingMsg.edit({embeds: [error_unknown] 
-                    });
-                }
-            }
-
+            sendTypingInterval && clearInterval(sendTypingInterval);
+            
+            handleGeminiError(err, loadingMsg);
+            
+        }
     },
 };

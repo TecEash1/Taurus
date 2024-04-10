@@ -63,7 +63,7 @@ module.exports = {
 			}
 		}
 
-			// Practically not possible, but we are still caching the bug.
+		// Practically not possible, but we are still caching the bug.
 		// Possible Fix is a restart!
 		else {
 			return console.log(

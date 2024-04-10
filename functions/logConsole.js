@@ -60,5 +60,4 @@ module.exports = (client) => {
     
     console.originalInfo = console.info;
     console.info = customLogger.bind(null, 'info');
-
 };
