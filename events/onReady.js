@@ -16,14 +16,15 @@ module.exports = {
 	 * @param {import('../typings').Client} client Main Application Client.
 	 */
 	execute(client) {
-
 		client.user.setPresence({
-			activities: [{
-				 type: ActivityType.Custom,
-				 name: "Status", 
-				 state: "💾 Chilling on my owners computer!"
-			}]
-		})
+			activities: [
+				{
+					type: ActivityType.Custom,
+					name: "Status",
+					state: "💾 Chilling on my owners computer!",
+				},
+			],
+		});
 
 		console.log(`Ready! Logged in as ${client.user.tag}`);
 	},

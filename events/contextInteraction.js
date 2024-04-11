@@ -29,7 +29,7 @@ module.exports = {
 
 		if (interaction.isUserContextMenuCommand()) {
 			const command = client.contextCommands.get(
-				"USER " + interaction.commandName
+				"USER " + interaction.commandName,
 			);
 
 			// A try to execute the interaction.
@@ -39,15 +39,16 @@ module.exports = {
 			} catch (err) {
 				console.error(err);
 				await interaction.reply({
-					content: "There was an issue while executing that context command! If the issue persists please contact the bot owners.",
-					ephemeral: true
+					content:
+						"There was an issue while executing that context command! If the issue persists please contact the bot owners.",
+					ephemeral: true,
 				});
 			}
 		}
 		// Checks if the interaction target was a message
 		else if (interaction.isMessageContextMenuCommand()) {
 			const command = client.contextCommands.get(
-				"MESSAGE " + interaction.commandName
+				"MESSAGE " + interaction.commandName,
 			);
 
 			// A try to execute the interaction.
@@ -55,10 +56,11 @@ module.exports = {
 			try {
 				return await command.execute(interaction);
 			} catch (err) {
-				console.dir(err, { showHidden: true });
+				console.error(err);
 				await interaction.reply({
-					content: "There was an issue while executing that context command! If the issue persists please contact the bot owners.",
-					ephemeral: true
+					content:
+						"There was an issue while executing that context command! If the issue persists please contact the bot owners.",
+					ephemeral: true,
 				});
 			}
 		}
@@ -67,8 +69,8 @@ module.exports = {
 		// Possible Fix is a restart!
 		else {
 			return console.log(
-				"Something weird happening in context menu. Received a context menu of unknown type. If the issue persists please contact the bot owners."
+				"Something weird happening in context menu. Received a context menu of unknown type. If the issue persists please contact the bot owners.",
 			);
 		}
-	}
+	},
 };

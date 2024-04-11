@@ -16,7 +16,7 @@ const {
 	Partials,
 	REST,
 	Routes,
-	SlashCommandBuilder
+	SlashCommandBuilder,
 } = require("discord.js");
 const { token, client_id } = require("./config.json");
 
@@ -58,7 +58,7 @@ for (const file of eventFiles) {
 	} else {
 		client.on(
 			event.name,
-			async (...args) => await event.execute(...args, client)
+			async (...args) => await event.execute(...args, client),
 		);
 	}
 }
@@ -114,7 +114,9 @@ for (const module of autocompleteInteractions) {
 		.filter((file) => file.endsWith(".js"));
 
 	for (const interactionFile of files) {
-		const interaction = require(`./interactions/autocomplete/${module}/${interactionFile}`);
+		const interaction = require(
+			`./interactions/autocomplete/${module}/${interactionFile}`,
+		);
 		client.autocompleteInteractions.set(interaction.name, interaction);
 	}
 }
@@ -141,7 +143,6 @@ for (const folder of contextMenus) {
 		client.contextCommands.set(keyName, menu);
 	}
 }
-
 
 /**********************************************************************/
 // Registration of Modal-Command Interactions.
@@ -179,11 +180,11 @@ const functionFiles = fs.readdirSync("./functions");
 // Loop through all files and store functions in functions collection.
 
 for (const functionFile of functionFiles) {
-    if (functionFile.endsWith(".js")) {
-        const func = require(`./functions/${functionFile}`);
-        client.functions.set(functionFile.replace('.js', ''), func);
-        func(client);
-    }
+	if (functionFile.endsWith(".js")) {
+		const func = require(`./functions/${functionFile}`);
+		client.functions.set(functionFile.replace(".js", ""), func);
+		func(client);
+	}
 }
 
 /**********************************************************************/
@@ -192,18 +193,19 @@ for (const functionFile of functionFiles) {
 const rest = new REST({ version: "9" }).setToken(token);
 
 const commandJsonData = [
-    ...Array.from(client.slashCommands.values()).map((c) => {
-        const commandData = c.data instanceof SlashCommandBuilder ? c.data.toJSON() : c.data;
-        commandData.integration_types = [1];
-        commandData.contexts = [0, 1, 2];
-        return commandData;
-    }),
+	...Array.from(client.slashCommands.values()).map((c) => {
+		const commandData =
+			c.data instanceof SlashCommandBuilder ? c.data.toJSON() : c.data;
+		commandData.integration_types = [1];
+		commandData.contexts = [0, 1, 2];
+		return commandData;
+	}),
 	...Array.from(client.contextCommands.values()).map((c) => {
-        const commandData = c.data;
-        commandData.integration_types = [1];
-        commandData.contexts = [0, 1, 2];
-        return commandData;
-    })
+		const commandData = c.data;
+		commandData.integration_types = [1];
+		commandData.contexts = [0, 1, 2];
+		return commandData;
+	}),
 ];
 
 (async () => {
@@ -213,7 +215,7 @@ const commandJsonData = [
 		await rest.put(
 			Routes.applicationCommands(client_id),
 
-			{ body: commandJsonData }
+			{ body: commandJsonData },
 		);
 
 		console.log("Successfully reloaded application (/) commands.");
@@ -233,15 +235,15 @@ process.on("unhandledRejection", (reason, promise) => {
 
 	// Uncomment the below lines below to see the full error details. - ADVANCED DEBUGGING //
 
-    // console.dir(reason, { showHidden: true, depth: null });
-    // console.log("Promise: ", promise);
+	// console.dir(reason, { showHidden: true, depth: null });
+	// console.log("Promise: ", promise);
 });
 
 process.on("uncaughtException", (error, origin) => {
 	console.error(`🚫 Critical Error detected:\n\n`, error, origin);
-	
+
 	// Uncomment the below lines below to see the full error details. - ADVANCED DEBUGGING //
 
-    // console.dir(error, { showHidden: true, depth: null });
-    // console.log("Origin: ", origin);
+	// console.dir(error, { showHidden: true, depth: null });
+	// console.log("Origin: ", origin);
 });

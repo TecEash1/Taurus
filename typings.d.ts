@@ -56,7 +56,7 @@ export interface LegacyCommand {
 	 */
 	execute(
 		message: Discord.Message & { client: Client },
-		args: string[]
+		args: string[],
 	): void | Promise<void>;
 }
 
@@ -84,7 +84,7 @@ export interface SlashInteractionCommand {
 	 * @param interaction The interaction that triggered this command.
 	 */
 	execute(
-		interaction: Discord.ChatInputCommandInteraction & { client: Client }
+		interaction: Discord.ChatInputCommandInteraction & { client: Client },
 	): void | Promise<void>;
 }
 
@@ -102,7 +102,7 @@ export interface ButtonInteractionCommand {
 	 * @param interaction The interaction that triggered this command.
 	 */
 	execute(
-		interaction: Discord.ButtonInteraction & { client: Client }
+		interaction: Discord.ButtonInteraction & { client: Client },
 	): void | Promise<void>;
 }
 
@@ -120,7 +120,7 @@ export interface SelectInteractionCommand {
 	 * @param interaction The interaction that triggered this command.
 	 */
 	execute(
-		interaction: Discord.SelectMenuInteraction & { client: Client }
+		interaction: Discord.SelectMenuInteraction & { client: Client },
 	): void | Promise<void>;
 }
 
@@ -155,7 +155,7 @@ export interface ContextInteractionCommand {
 	 * @param interaction The interaction that triggered this command.
 	 */
 	execute(
-		interaction: Discord.ContextMenuCommandInteraction & { client: Client }
+		interaction: Discord.ContextMenuCommandInteraction & { client: Client },
 	): void | Promise<void>;
 }
 
@@ -173,7 +173,7 @@ export interface ModalInteractionCommand {
 	 * @param interaction The interaction that triggered this command.
 	 */
 	execute(
-		interaction: Discord.ModalSubmitInteraction & { client: Client }
+		interaction: Discord.ModalSubmitInteraction & { client: Client },
 	): void | Promise<void>;
 }
 
@@ -192,7 +192,7 @@ export interface TriggerCommand {
 	 */
 	execute(
 		message: Discord.Message & { client: Client },
-		args: string[]
+		args: string[],
 	): void | Promise<void>;
 }
 
@@ -210,7 +210,7 @@ export interface AutocompleteInteraction {
 	 * @param interaction The interaction that triggered this command.
 	 */
 	execute(
-		interaction: Discord.AutocompleteInteraction & { client: Client }
+		interaction: Discord.AutocompleteInteraction & { client: Client },
 	): void | Promise<void>;
 }
 

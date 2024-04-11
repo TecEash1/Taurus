@@ -27,7 +27,7 @@ module.exports = {
 		// Checks if the request is available in our code.
 
 		const request = client.autocompleteInteractions.get(
-			interaction.commandName
+			interaction.commandName,
 		);
 
 		// If the interaction is not a request in cache return.

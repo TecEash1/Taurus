@@ -36,5 +36,8 @@
 		"moment": "^2.30.1",
 		"nsfwjs": "^4.1.0",
 		"os": "^0.1.2"
+	},
+	"devDependencies": {
+		"prettier": "3.2.5"
 	}
 }

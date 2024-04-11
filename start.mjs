@@ -8,7 +8,7 @@ import figlet from "figlet";
 // Create a screen object.
 const screen = blessed.screen({
 	smartCSR: true,
-	title: "Taurus Bot Console"
+	title: "Taurus Bot Console",
 });
 
 // Create a box that fills the entire screen.
@@ -20,15 +20,15 @@ const box = blessed.box({
 	content: "",
 	tags: true,
 	border: {
-		type: "line"
+		type: "line",
 	},
 	style: {
 		fg: "white",
 		bg: "black",
 		border: {
-			fg: "#ff0000" // Red
-		}
-	}
+			fg: "#ff0000", // Red
+		},
+	},
 });
 
 // Create a console box at the top right.
@@ -40,15 +40,15 @@ const consoleBox = blessed.box({
 	content: "{underline}Taurus Console{/underline}",
 	tags: true,
 	border: {
-		type: "line"
+		type: "line",
 	},
 	style: {
 		fg: "white",
 		bg: "black",
 		border: {
-			fg: "#ff0000" // Red
-		}
-	}
+			fg: "#ff0000", // Red
+		},
+	},
 });
 
 // Append our boxes to the screen.
@@ -62,13 +62,15 @@ let botStatus = "Offline";
 // Function to start the Discord bot.
 function startBot() {
 	if (bot) {
-		writeToConsole(chalk.red("Bot is already running. Please stop the bot first."));
+		writeToConsole(
+			chalk.red("Bot is already running. Please stop the bot first."),
+		);
 		return;
 	}
 
 	// Modify this line to start your bot with the correct command and arguments
 	bot = spawn("node", ["bot.js"], {
-		stdio: ["pipe", "pipe", "pipe", "pipe", "pipe", "pipe", process.stderr]
+		stdio: ["pipe", "pipe", "pipe", "pipe", "pipe", "pipe", process.stderr],
 	});
 
 	botStartTime = moment();
@@ -93,7 +95,9 @@ function startBot() {
 // Function to stop the Discord bot.
 function stopBot() {
 	if (!bot) {
-		writeToConsole(chalk.red("Bot is not running. Please start the bot first."));
+		writeToConsole(
+			chalk.red("Bot is not running. Please start the bot first."),
+		);
 		return;
 	}
 
@@ -111,24 +115,26 @@ function stopBot() {
 
 // Function to restart the Discord bot.
 function restartBot() {
-    stopBot();
-    const gitPull = spawn('git', ['pull']);
+	stopBot();
+	const gitPull = spawn("git", ["pull"]);
 
-    gitPull.stdout.on('data', (data) => {
-        writeToConsole(chalk.italic(`[GIT] stdout: ${data}`));
-    });
+	gitPull.stdout.on("data", (data) => {
+		writeToConsole(chalk.italic(`[GIT] stdout: ${data}`));
+	});
 
-    gitPull.stderr.on('data', (data) => {
-        writeToConsole(chalk.italic(`[GIT] stderr: ${data}`));
-    });
+	gitPull.stderr.on("data", (data) => {
+		writeToConsole(chalk.italic(`[GIT] stderr: ${data}`));
+	});
 
-    gitPull.on('close', (code) => {
-        writeToConsole(chalk.italic(`[GIT] child process exited with code ${code}`));
-        setTimeout(() => {
-            startBot();
-            writeToConsole(chalk.red("Bot restarted."));
-        }, 1000); 
-    });
+	gitPull.on("close", (code) => {
+		writeToConsole(
+			chalk.italic(`[GIT] child process exited with code ${code}`),
+		);
+		setTimeout(() => {
+			startBot();
+			writeToConsole(chalk.red("Bot restarted."));
+		}, 1000);
+	});
 }
 
 // Function to refresh the console.
@@ -139,20 +145,24 @@ function refreshConsole() {
 }
 
 let title = "";
-figlet.text("Taurus", {
-	font: "Standard",
-	horizontalLayout: "default",
-	verticalLayout: "default",
-	width: 100,
-	whitespaceBreak: true
-}, function(err, data) {
-	if (err) {
-		console.log("Something went wrong...");
-		console.dir(err);
-		return;
-	}
-	title = chalk.red(data); // Red
-});
+figlet.text(
+	"Taurus",
+	{
+		font: "Standard",
+		horizontalLayout: "default",
+		verticalLayout: "default",
+		width: 100,
+		whitespaceBreak: true,
+	},
+	function (err, data) {
+		if (err) {
+			console.log("Something went wrong...");
+			console.dir(err);
+			return;
+		}
+		title = chalk.red(data); // Red
+	},
+);
 
 // Function to update the box content with system and bot stats
 function updateStats() {
@@ -162,25 +172,27 @@ function updateStats() {
 	const cpuCores = os.cpus().length.toString();
 	const osInfo = `${os.type()} (${os.release()})`;
 
-	const botUptime = botStartTime ? moment.duration(moment().diff(botStartTime)).humanize() : "Not available";
-	const botMemoryUsage = (process.memoryUsage().heapUsed / 1024 / 1024 / 1024).toFixed(2) + " GB";
+	const botUptime = botStartTime
+		? moment.duration(moment().diff(botStartTime)).humanize()
+		: "Not available";
+	const botMemoryUsage =
+		(process.memoryUsage().heapUsed / 1024 / 1024 / 1024).toFixed(2) + " GB";
 
-	box.setContent(`${title}\n\n` +
-		`${chalk.red("Bot Status:")} ${botStatus === "Online" ? chalk.green(botStatus) : chalk.red(botStatus)}\n\n` +
-		`${chalk.red("VPS Uptime:")} ${chalk.white(serverUptime)}\n` +
-		`${chalk.red("Total Memory:")} ${chalk.white(totalMemory)}\n` +
-		`${chalk.red("Bot Uptime:")} ${chalk.white(botUptime)}\n` +
-		`${chalk.red("Bot Memory Usage:")} ${chalk.white(botMemoryUsage)}\n` +
-		`${chalk.red("CPU Threads:")} ${chalk.white(cpuCores)}\n` +
-		`${chalk.red("OS Info:")} ${chalk.white(osInfo)}\n\n` +
-		`${chalk.red("Commands:")}\n` +
-
-		`${chalk.green("S")} - ${chalk.white("Start Bot")}\n` +
-		`${chalk.green("X")} - ${chalk.white("Stop Bot")}\n` +
-		`${chalk.green("R")} - ${chalk.white("Restart & Update Bot")}\n` +
-		`${chalk.green("L")} - ${chalk.white("Refresh Console")}\n\n` +
-
-		`${chalk.red("Press")} ${chalk.white("Ctrl+C")} ${chalk.red("to stop the bot and exit.")}\n\n\n`
+	box.setContent(
+		`${title}\n\n` +
+			`${chalk.red("Bot Status:")} ${botStatus === "Online" ? chalk.green(botStatus) : chalk.red(botStatus)}\n\n` +
+			`${chalk.red("VPS Uptime:")} ${chalk.white(serverUptime)}\n` +
+			`${chalk.red("Total Memory:")} ${chalk.white(totalMemory)}\n` +
+			`${chalk.red("Bot Uptime:")} ${chalk.white(botUptime)}\n` +
+			`${chalk.red("Bot Memory Usage:")} ${chalk.white(botMemoryUsage)}\n` +
+			`${chalk.red("CPU Threads:")} ${chalk.white(cpuCores)}\n` +
+			`${chalk.red("OS Info:")} ${chalk.white(osInfo)}\n\n` +
+			`${chalk.red("Commands:")}\n` +
+			`${chalk.green("S")} - ${chalk.white("Start Bot")}\n` +
+			`${chalk.green("X")} - ${chalk.white("Stop Bot")}\n` +
+			`${chalk.green("R")} - ${chalk.white("Restart & Update Bot")}\n` +
+			`${chalk.green("L")} - ${chalk.white("Refresh Console")}\n\n` +
+			`${chalk.red("Press")} ${chalk.white("Ctrl+C")} ${chalk.red("to stop the bot and exit.")}\n\n\n`,
 	);
 	screen.render();
 }
@@ -208,7 +220,6 @@ process.on("SIGINT", () => {
 // Start the bot when script is run initially.
 startBot();
 
-
 // Listen for keystrokes and map them to commands.
 screen.key(["S", "s"], () => {
 	startBot();
@@ -226,7 +237,7 @@ screen.key(["L", "l"], () => {
 	refreshConsole();
 });
 
-screen.key(["escape", "q", "C-c"], function(ch, key) {
+screen.key(["escape", "q", "C-c"], function (ch, key) {
 	return process.exit(0);
 });
 

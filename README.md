@@ -3,25 +3,28 @@
 </p>
 
 ## 🤔 What is this bot?
+
 The **Taurus Discord Bot** is a small bot, it can be used for several things such as:
+
 - Image Generation
 - AI GPT chats and personality customisations
 
 ## 💾 Install
 
-1. fill in the token and other values in ``config.json.example``
+1. fill in the token and other values in `config.json.example`
 
-2. Rename the file to ``config.json``
+2. Rename the file to `config.json`
 
-3. Run ``npm i``
+3. Run `npm i`
 
-4. Run ``node bot``
+4. Run `node bot`
 
 **Note** - Alternatively **instead of steps 3 & 4** you can **run one of the startbot/start scripts.**
 
 - All PR's are welcome for improvements.
 
 ### ℹ️ Getting API Keys:
+
 - https://ai.google.dev
 - https://app.prodia.com/api
 

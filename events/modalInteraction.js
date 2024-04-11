@@ -24,7 +24,7 @@ module.exports = {
 
 		if (!interaction.isModalSubmit()) return;
 
-        if (interaction.customId === 'taurus_ai_personality') return;
+		if (interaction.customId === "taurus_ai_personality") return;
 
 		const command = client.modalCommands.get(interaction.customId);
 
@@ -32,13 +32,17 @@ module.exports = {
 		// You can modify the error message at ./messages/defaultModalError.js file!
 
 		if (!command) {
-			return await require("../messages/defaultModalError").execute(interaction);
+			return await require("../messages/defaultModalError").execute(
+				interaction,
+			);
 		}
 
 		// A try to execute the interaction.
 
 		const error = new EmbedBuilder()
-			.setDescription("**There was an issue while understanding this modal!\n\nPlease contact the Developers.**")
+			.setDescription(
+				"**There was an issue while understanding this modal!\n\nPlease contact the Developers.**",
+			)
 			.setColor("Red");
 
 		try {

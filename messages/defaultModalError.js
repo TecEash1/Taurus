@@ -5,7 +5,9 @@
 const { EmbedBuilder } = require("discord.js");
 
 const error = new EmbedBuilder()
-	.setDescription("**There was an issue while fetching this modal!\n\nPlease contact the Developers.**")
+	.setDescription(
+		"**There was an issue while fetching this modal!\n\nPlease contact the Developers.**",
+	)
 	.setColor("Red");
 
 module.exports = {
