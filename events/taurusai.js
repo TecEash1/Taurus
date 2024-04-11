@@ -17,8 +17,8 @@ module.exports = {
 
     async execute(message) {
         if (message.author.bot || message.author.id === message.client.user.id) return;
-        if (message.type === 21) return;
-
+        if ([18, 21].includes(message.type)) return;
+                
         let userQuestion
         let threadMessages = [];
 
