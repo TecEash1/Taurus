@@ -14,9 +14,7 @@ module.exports = (client) => {
     function customLogger(type, ...messages) {
         const combinedMessage = messages.map(m => (typeof m === 'object' ? JSON.stringify(m, null, 2) : m)).join(' ');
         
-        if (combinedMessage === "By passing no model path, you're using the model hosted by Infinite.red - Please download and host the model before releasing this in production. See NSFWJS docs for instructions.") {
-            return;
-        }
+        if (combinedMessage === "%cBy not specifying 'modelOrUrl' parameter, you're using the default model: 'MobileNetV2'. See NSFWJS docs for instructions on hosting your own model (https://github.com/infinitered/nsfwjs?tab=readme-ov-file#host-your-own-model). color: lightblue") return;
 
         let messageToSend = combinedMessage;
         if (combinedMessage.length > 4070) { 
