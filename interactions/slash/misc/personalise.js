@@ -30,7 +30,7 @@ const channelId = channel_id_logs;
 
 const no_access = new EmbedBuilder()
 	.setDescription(
-		"**Only my developers can directly update my global personality prompt!**\n\nIf you want to suggest a change, please let us know!",
+		"**⚠️ Only my developers can update/view my global personality prompt!**\n\n> *If you want to suggest a change, please let us know!*",
 	)
 	.setColor("Red");
 

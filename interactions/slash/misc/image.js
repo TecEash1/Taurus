@@ -115,7 +115,7 @@ module.exports = {
 			invalid_api = new EmbedBuilder()
 				.setTitle("⚠️ Invalid API Key")
 				.setDescription(
-					"> **The API Key for Prodia is invalid or not provided.**",
+					"> *The API Key for Prodia is invalid or not provided*\n> **Please contact the bot owners**",
 				)
 				.setColor("Red");
 			return interaction.reply({ embeds: [invalid_api] });
