@@ -130,10 +130,27 @@ function restartBot() {
 		writeToConsole(
 			chalk.italic(`[GIT] child process exited with code ${code}`),
 		);
-		setTimeout(() => {
-			startBot();
-			writeToConsole(chalk.red("Bot restarted."));
-		}, 1000);
+
+		const pnpmInstall = spawn("pnpm", ["install"], { shell: true });
+
+		pnpmInstall.stdout.on("data", (data) => {
+			const message = data.toString().trim();
+			message && writeToConsole(chalk.italic(`[PNPM] stdout: ${message}`));
+		});
+
+		pnpmInstall.stderr.on("data", (data) => {
+			writeToConsole(chalk.italic(`[PNPM] stderr: ${data}`));
+		});
+
+		pnpmInstall.on("close", (code) => {
+			writeToConsole(
+				chalk.italic(`[PNPM] child process exited with code ${code}`),
+			);
+			setTimeout(() => {
+				startBot();
+				writeToConsole(chalk.red("Bot restarted."));
+			}, 1000);
+		});
 	});
 }
 
