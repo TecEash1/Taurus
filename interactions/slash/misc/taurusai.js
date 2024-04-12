@@ -9,7 +9,6 @@ const {
 	TextInputBuilder,
 	TextInputStyle,
 	ActionRowBuilder,
-	EmbedBuilder,
 } = require("discord.js");
 
 module.exports = {

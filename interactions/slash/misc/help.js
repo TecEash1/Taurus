@@ -12,7 +12,7 @@ module.exports = {
 	data: new SlashCommandBuilder()
 		.setName("help")
 		.setDescription("Display available slash commands"),
-	async execute(interaction, client) {
+	async execute(interaction) {
 		const commands = interaction.client.slashCommands;
 		const commandList = commands
 			.map(
