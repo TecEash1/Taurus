@@ -64,6 +64,15 @@ async function handleGeminiError(err, loadingMsg) {
 				.setColor("Red");
 
 			return await loadingMsg.edit({ embeds: [error] });
+		case "[GoogleGenerativeAI Error]: Error fetching from https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro-latest:generateContent: [500 Internal Server Error] An internal error has occurred. Please retry or report in https://developers.generativeai.google/guide/troubleshooting":
+			const error_internal = new EmbedBuilder()
+				.setTitle("⚠️ An Error Occurred")
+				.setDescription(
+					"An error occurred while processing your request. This error originated from Google's side, not ours.  \n*If this issue persists, please contact the Developers.* \n\n> - Please retry and make another request.",
+				)
+				.setColor("Red");
+
+			return await loadingMsg.edit({ embeds: [error_internal] });
 		default:
 			console.error(err.message);
 			const error_unknown = new EmbedBuilder()

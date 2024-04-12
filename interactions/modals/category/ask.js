@@ -70,10 +70,10 @@ module.exports = {
 			.map(([platform, status]) => `${platform}: ${status}`)
 			.join("\n");
 
-		parts1 = `${personalityLines}\n Please greet the user with a greeting and then their name which is: <@${interaction.user.id}>.`;
+		parts1 = `${personalityLines}\n Please greet the user with a greeting and then their name which is: <@${interaction.user.id}> and limit your responses to 2000 characters or less.`;
 
 		if (Object.keys(user_status).length) {
-			parts1 += ` The user's presence is currently:\n${status_devices}`;
+			parts1 += ` The user's status/presence is currently:\n${status_devices}`;
 		}
 
 		async function run() {
@@ -82,7 +82,17 @@ module.exports = {
 			};
 
 			const model = genAI.getGenerativeModel(
-				{ model: "gemini-1.5-pro-latest" },
+				{
+					model: "gemini-1.5-pro-latest",
+					systemInstruction: {
+						role: "system",
+						parts: [
+							{
+								text: parts1,
+							},
+						],
+					},
+				},
 				{
 					apiVersion: "v1beta",
 					safetySettings,
@@ -91,20 +101,6 @@ module.exports = {
 			);
 
 			const chat = model.startChat({
-				history: [
-					{
-						role: "user",
-						parts: [{ text: parts1 }],
-					},
-					{
-						role: "model",
-						parts: [
-							{
-								text: `I will greet the user with their name: <@${interaction.user.id}>. I will also limit all of my responses to 2000 characters or less, regardless of what you say. Feel feel free to ask me anything! 😊`,
-							},
-						],
-					},
-				],
 				generationConfig: {
 					maxOutputTokens: 750,
 				},
