@@ -110,7 +110,8 @@ async function handleResponse(
 	let match;
 
 	while ((match = regex.exec(responseText)) !== null) {
-		const id = interaction ? interaction.user.id : message.author.id;
+		const id =
+			message && message.author ? message.author.id : interaction.user.id;
 
 		if (match[0] !== `<@${id}>`) {
 			const ping_error = new EmbedBuilder()
