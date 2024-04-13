@@ -26,17 +26,20 @@ module.exports = {
 		if ([18, 21].includes(message.type)) return;
 
 		let userQuestion;
+		let messageDeleted;
 		let threadMessages = [];
 
 		if (message.reference) {
 			const {
 				userQuestion: fetchedUserQuestion,
 				threadMessages: fetchedThreadMessages,
+				messageDeleted: fetchedMessageDeleted,
 			} = await fetchThreadMessages(Gemini_API_KEY, message);
 			if (fetchedUserQuestion === null && fetchedThreadMessages === null)
 				return;
 			threadMessages = fetchedThreadMessages;
 			userQuestion = fetchedUserQuestion;
+			messageDeleted = fetchedMessageDeleted;
 		} else if (!message.reference) {
 			const botMention = `<@${message.client.user.id}>`;
 			const regex = new RegExp(`^${botMention}\\s+.+`);
@@ -114,16 +117,8 @@ module.exports = {
 				threadMessages.length > 0 &&
 				threadMessages[0].role === "model"
 			) {
-				const userMessage = {
-					role: "user",
-					parts: [
-						{
-							text: "[User Message Here]",
-						},
-					],
-				};
-
-				threadMessages.unshift(userMessage);
+				messageDeleted = "threadDeleted";
+				threadMessages = [];
 			}
 
 			const chat = model.startChat({
@@ -135,7 +130,14 @@ module.exports = {
 
 			clearInterval(loadingInterval);
 			clearInterval(sendTypingInterval);
-			await handleResponse(chat, userQuestion, false, message, loadingMsg);
+			await handleResponse(
+				chat,
+				userQuestion,
+				false,
+				message,
+				loadingMsg,
+				messageDeleted,
+			);
 		}
 
 		try {

@@ -7,7 +7,7 @@
  * @type {import("../../../typings").ContextInteractionCommand}
  */
 
-const { Collection, ChannelType, Events, EmbedBuilder } = require("discord.js");
+const { EmbedBuilder } = require("discord.js");
 const fs = require("fs").promises;
 const path = require("path");
 const { GoogleGenerativeAI } = require("@google/generative-ai");
@@ -42,17 +42,20 @@ module.exports = {
 		}
 
 		let userQuestion;
+		let messageDeleted;
 		let threadMessages = [];
 
 		if (message.reference) {
 			const {
 				userQuestion: fetchedUserQuestion,
 				threadMessages: fetchedThreadMessages,
+				messageDeleted: fetchedMessageDeleted,
 			} = await fetchThreadMessages(Gemini_API_KEY, message);
 			if (fetchedUserQuestion === null && fetchedThreadMessages === null)
 				return;
 			threadMessages = fetchedThreadMessages;
 			userQuestion = fetchedUserQuestion;
+			messageDeleted = fetchedMessageDeleted;
 		} else if (!message.reference) {
 			const botMention = `<@${message.client.user.id}>`;
 			const regex = new RegExp(`^${botMention}\\s+.+`);
@@ -137,16 +140,8 @@ module.exports = {
 				threadMessages.length > 0 &&
 				threadMessages[0].role === "model"
 			) {
-				const userMessage = {
-					role: "user",
-					parts: [
-						{
-							text: "[User Message Here]",
-						},
-					],
-				};
-
-				threadMessages.unshift(userMessage);
+				messageDeleted = "threadDeleted";
+				threadMessages = [];
 			}
 
 			const chat = model.startChat({
@@ -164,6 +159,7 @@ module.exports = {
 				interaction,
 				message,
 				loadingMsg,
+				messageDeleted,
 				true,
 			);
 		}

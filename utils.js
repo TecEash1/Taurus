@@ -1,5 +1,5 @@
 const { HarmCategory, HarmBlockThreshold } = require("@google/generative-ai");
-const { EmbedBuilder } = require("discord.js");
+const { EmbedBuilder, DiscordAPIError } = require("discord.js");
 
 function botInGuild(interaction) {
 	const botGuilds = interaction.client.guilds.cache;
@@ -92,6 +92,7 @@ async function handleResponse(
 	interaction,
 	message,
 	loadingMsg,
+	messageDeleted,
 	isContextMenuCommand,
 ) {
 	const result = await chat.sendMessage(userQuestion);
@@ -135,6 +136,29 @@ async function handleResponse(
 		info_embed.push(info);
 	}
 
+	switch (messageDeleted) {
+		case "threadDeleted":
+			const deletedThread = new EmbedBuilder()
+				.setFooter({
+					text: "A message has been deleted/is not accessible in the reply thread, Taurus does not know the past reply thread history.",
+				})
+				.setColor("Orange");
+
+			info_embed.push(deletedThread);
+			break;
+		case "slashCommand":
+			const deletedSlashCommand = new EmbedBuilder()
+				.setFooter({
+					text: "Reply thread history not accessible, utilise history by mentioning me to chat instead.",
+				})
+				.setColor("Orange");
+
+			info_embed.push(deletedSlashCommand);
+			break;
+		default:
+			break;
+	}
+
 	// responseText = responseText.replace(/(https?:\/\/(?!media\.discordapp\.net\/attachments\/)[^\s\)]+)/g, "<$1>");
 	return await loadingMsg.edit({ content: responseText, embeds: info_embed });
 }
@@ -155,36 +179,47 @@ async function checkGeminiApiKey(Gemini_API_KEY, interaction, message) {
 }
 
 async function fetchThreadMessages(Gemini_API_KEY, message) {
-	let userQuestion;
 	let threadMessages = [];
-
-	if (await checkGeminiApiKey(Gemini_API_KEY, false, message)) return;
-	const originalMessage = await message.channel.messages.fetch(
-		message.reference.messageId,
-	);
-
-	if (originalMessage.author.id !== message.client.user.id)
-		return { userQuestion: null, threadMessages: null };
-
-	if (originalMessage.author.id === message.client.user.id) {
-		let currentMessage = message;
-
-		while (currentMessage.reference) {
-			currentMessage = await message.channel.messages.fetch(
-				currentMessage.reference.messageId,
-			);
-			const sender =
-				currentMessage.author.id === message.client.user.id ? "model" : "user";
-			let content = currentMessage.content;
-			if (sender === "user") {
-				content = content.replace(/<@\d+>\s*/, "");
-			}
-			threadMessages.unshift({ role: sender, parts: [{ text: content }] });
-		}
-	}
+	let messageDeleted;
 	userQuestion = message.content;
 
-	return { userQuestion, threadMessages };
+	if (await checkGeminiApiKey(Gemini_API_KEY, false, message)) return;
+	try {
+		const originalMessage = await message.channel.messages.fetch(
+			message.reference.messageId,
+		);
+
+		if (originalMessage.author.id !== message.client.user.id)
+			return { userQuestion: null, threadMessages: null, messageDeleted };
+
+		if (originalMessage.author.id === message.client.user.id) {
+			let currentMessage = message;
+
+			while (currentMessage.reference) {
+				currentMessage = await message.channel.messages.fetch(
+					currentMessage.reference.messageId,
+				);
+				const sender =
+					currentMessage.author.id === message.client.user.id
+						? "model"
+						: "user";
+				let content = currentMessage.content;
+				if (sender === "user") {
+					content = content.replace(/<@\d+>\s*/, "");
+				}
+				threadMessages.unshift({ role: sender, parts: [{ text: content }] });
+			}
+		}
+	} catch (error) {
+		if (error instanceof DiscordAPIError && error.code === 10008) {
+			messageDeleted = "threadDeleted";
+			threadMessages = [];
+		} else {
+			throw error;
+		}
+	}
+
+	return { userQuestion, threadMessages, messageDeleted };
 }
 
 module.exports = {

@@ -108,7 +108,14 @@ module.exports = {
 
 			clearInterval(loadingInterval);
 			clearInterval(sendTypingInterval);
-			await handleResponse(chat, userQuestion, interaction, false, loadingMsg);
+			await handleResponse(
+				chat,
+				userQuestion,
+				interaction,
+				false,
+				loadingMsg,
+				"slashCommand",
+			);
 		}
 
 		try {
