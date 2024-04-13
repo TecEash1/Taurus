@@ -15,18 +15,16 @@ const {
 	ActionRowBuilder,
 	EmbedBuilder,
 	ButtonBuilder,
+	WebhookClient,
 } = require("discord.js");
 const axios = require("axios");
 const fs = require("fs").promises;
 const path = require("path");
 const {
-	guild_id_logs,
-	channel_id_logs,
+	webhook_url_personality_logs,
+	webhook_avatar_url,
 	owner,
 } = require("../../../config.json");
-
-const serverId = guild_id_logs;
-const channelId = channel_id_logs;
 
 const no_access = new EmbedBuilder()
 	.setDescription(
@@ -239,7 +237,7 @@ module.exports = {
 
 		const error = new EmbedBuilder()
 			.setDescription(
-				"⚠️ There was an error while fetching the TaurusAI Log channel, please contact the Developers.",
+				"**⚠️ There was an error while fetching the TaurusAI Log channel, please contact the Developers.**",
 			)
 			.setColor("Red");
 
@@ -318,8 +316,9 @@ module.exports = {
 				await fs.writeFile(personalityFilePath, personalityPrompt);
 
 				try {
-					const guild = interaction.client.guilds.cache.get(serverId);
-					const channel = guild.channels.cache.get(channelId);
+					const webhookClient = new WebhookClient({
+						url: webhook_url_personality_logs,
+					});
 
 					update = new EmbedBuilder()
 						.setDescription(
@@ -332,7 +331,9 @@ module.exports = {
 						})
 						.setTimestamp();
 
-					await channel.send({
+					await webhookClient.send({
+						username: "Taurus Personality",
+						avatarURL: webhook_avatar_url,
 						embeds: [update],
 						files: [
 							{ attachment: personalityFilePath, name: "new_personality.txt" },

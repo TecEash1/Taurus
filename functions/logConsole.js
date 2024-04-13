@@ -1,6 +1,9 @@
 module.exports = (client) => {
 	const { WebhookClient, EmbedBuilder } = require("discord.js");
-	const { webhook_url_console_logs } = require("../config.json");
+	const {
+		webhook_url_console_logs,
+		webhook_avatar_url,
+	} = require("../config.json");
 	const webhookURL = webhook_url_console_logs;
 
 	let webhookClient;
@@ -52,8 +55,7 @@ module.exports = (client) => {
 		webhookClient
 			.send({
 				username: "Taurus Console",
-				avatarURL:
-					"https://github.com/TecEash1/TecEash1/assets/92249532/bd4aca7e-daab-4eeb-9265-e53cc1925e8c",
+				avatarURL: webhook_avatar_url,
 				embeds: [embed],
 			})
 			.catch(console.error);
