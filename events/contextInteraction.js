@@ -5,6 +5,7 @@
  * @version 3.3.2
  */
 const { Events } = require("discord.js");
+const { botInGuild } = require("../utils");
 
 module.exports = {
 	name: Events.InteractionCreate,
@@ -56,6 +57,13 @@ module.exports = {
 			try {
 				return await command.execute(interaction);
 			} catch (err) {
+				if (!botInGuild(interaction)) {
+					return await interaction.reply({
+						content:
+							"This command can only be executed in servers in which the bot is in, or in DMs/Group Chats.",
+						ephemeral: true,
+					});
+				}
 				console.error(err);
 				await interaction.reply({
 					content:
@@ -68,7 +76,7 @@ module.exports = {
 		// Practically not possible, but we are still caching the bug.
 		// Possible Fix is a restart!
 		else {
-			return console.log(
+			return console.error(
 				"Something weird happening in context menu. Received a context menu of unknown type. If the issue persists please contact the bot owners.",
 			);
 		}
