@@ -175,17 +175,17 @@ for (const module of modalCommands) {
  * @description All functions.
  */
 
-const functionFiles = fs.readdirSync("./functions");
+client.once("ready", () => {
+	const functionFiles = fs.readdirSync("./functions");
 
-// Loop through all files and store functions in functions collection.
-
-for (const functionFile of functionFiles) {
-	if (functionFile.endsWith(".js")) {
-		const func = require(`./functions/${functionFile}`);
-		client.functions.set(functionFile.replace(".js", ""), func);
-		func(client);
+	for (const functionFile of functionFiles) {
+		if (functionFile.endsWith(".js")) {
+			const func = require(`./functions/${functionFile}`);
+			client.functions.set(functionFile.replace(".js", ""), func);
+			func(client);
+		}
 	}
-}
+});
 
 /**********************************************************************/
 // Registration of Slash-Commands in Discord API

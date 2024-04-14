@@ -20,11 +20,7 @@ const {
 const axios = require("axios");
 const fs = require("fs").promises;
 const path = require("path");
-const {
-	webhook_url_personality_logs,
-	webhook_avatar_url,
-	owner,
-} = require("../../../config.json");
+const { webhook_url_personality_logs, owner } = require("../../../config.json");
 
 const no_access = new EmbedBuilder()
 	.setDescription(
@@ -333,7 +329,7 @@ module.exports = {
 
 					await webhookClient.send({
 						username: "Taurus Personality",
-						avatarURL: webhook_avatar_url,
+						avatarURL: interaction.client.user.displayAvatarURL(),
 						embeds: [update],
 						files: [
 							{ attachment: personalityFilePath, name: "new_personality.txt" },

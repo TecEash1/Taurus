@@ -26,6 +26,8 @@ module.exports = {
 			],
 		});
 
-		console.log(`Ready! Logged in as ${client.user.tag}`);
+		setTimeout(() => {
+			console.log(`Ready! Logged in as ${client.user.tag}`);
+		}, 25);
 	},
 };

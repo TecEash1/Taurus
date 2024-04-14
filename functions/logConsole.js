@@ -1,9 +1,6 @@
 module.exports = (client) => {
 	const { WebhookClient, EmbedBuilder } = require("discord.js");
-	const {
-		webhook_url_console_logs,
-		webhook_avatar_url,
-	} = require("../config.json");
+	const { webhook_url_console_logs } = require("../config.json");
 	const webhookURL = webhook_url_console_logs;
 
 	let webhookClient;
@@ -47,7 +44,7 @@ module.exports = (client) => {
 			combinedMessage.startsWith("Ready! Logged in as")
 		) {
 			embed.setColor("Green");
-			if (combinedMessage === "Started refreshing application (/) commands.") {
+			if (combinedMessage === `Ready! Logged in as ${client.user.tag}`) {
 				embed.setTitle("💾 Console Log");
 			}
 		}
@@ -55,7 +52,7 @@ module.exports = (client) => {
 		webhookClient
 			.send({
 				username: "Taurus Console",
-				avatarURL: webhook_avatar_url,
+				avatarURL: client.user.displayAvatarURL(),
 				embeds: [embed],
 			})
 			.catch(console.error);
