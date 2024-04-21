@@ -15,11 +15,13 @@ The **Taurus Discord Bot** is a small bot, it can be used for several things suc
 
 2. Rename the file to `config.json`
 
-3. Run `npm i`
+3. Run `pnpm i`
 
 4. Run `node bot`
 
-**Note** - Alternatively **instead of steps 3 & 4** you can **run one of the startbot/start scripts.**
+> [!NOTE]
+> - Alternatively **instead of steps 3 & 4** you can **run one of the startbot/start scripts.** *(Reccomended)*
+> - If you do not have pnpm installed you will need to run: ``npm install -g pnpm``
 
 - All PR's are welcome for improvements.
 
