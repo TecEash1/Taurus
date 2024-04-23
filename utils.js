@@ -190,13 +190,30 @@ async function fetchThreadMessages(Gemini_API_KEY, message) {
 			message.reference.messageId,
 		);
 
-		if (originalMessage.author.id !== message.client.user.id)
-			return { userQuestion: null, threadMessages: null, messageDeleted };
+		if (
+			originalMessage.author.id !== message.client.user.id ||
+			(originalMessage.embeds.length > 0 &&
+				!originalMessage.embeds[0].footer.text.startsWith(
+					"Response to message by",
+				))
+		) {
+			return {
+				userQuestion,
+				threadMessages: null,
+				messageDeleted: "threadDeleted",
+			};
+		}
 
 		if (originalMessage.author.id === message.client.user.id) {
 			let currentMessage = message;
 
-			while (currentMessage.reference) {
+			while (
+				currentMessage.reference &&
+				!(
+					currentMessage.author.id === message.client.user.id &&
+					currentMessage.embeds.length > 0
+				)
+			) {
 				currentMessage = await message.channel.messages.fetch(
 					currentMessage.reference.messageId,
 				);
@@ -207,6 +224,21 @@ async function fetchThreadMessages(Gemini_API_KEY, message) {
 				let content = currentMessage.content;
 				if (sender === "user") {
 					content = content.replace(/<@\d+>\s*/, "");
+				} else if (
+					sender === "model" &&
+					currentMessage.embeds.length > 0 &&
+					currentMessage.embeds[0].footer.text.startsWith(
+						"Response to message by",
+					)
+				) {
+					const footerText = currentMessage.embeds[0].footer.text;
+					const userMessage = footerText.split("\n")[2];
+					threadMessages.unshift({ role: sender, parts: [{ text: content }] });
+					threadMessages.unshift({
+						role: "user",
+						parts: [{ text: userMessage }],
+					});
+					continue;
 				}
 				threadMessages.unshift({ role: sender, parts: [{ text: content }] });
 			}

@@ -158,7 +158,7 @@ module.exports = {
 				interaction,
 				message,
 				loadingMsg,
-				"slashCommand",
+				messageDeleted,
 				true,
 			);
 		}
