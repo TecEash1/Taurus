@@ -13,10 +13,14 @@ module.exports = {
 		.setName("help")
 		.setDescription("Display available slash commands"),
 	async execute(interaction) {
-		const commands = interaction.client.slashCommands;
+		const commands = (
+			await interaction.client.application.commands.fetch()
+		).filter((command) => command.type === 1);
+
 		const commandList = commands
 			.map(
-				(command) => `**/${command.data.name}**: ${command.data.description}`,
+				(command) =>
+					`**</${command.name}:${command.id}>**: ${command.description}`,
 			)
 			.join("\n");
 
