@@ -1,6 +1,6 @@
 {
 	"name": "taurus",
-	"version": "3.1",
+	"version": "3.3",
 	"description": "An AI Discord Bot!",
 	"types": "./typings.d.ts",
 	"main": "bot.js",
