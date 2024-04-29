@@ -196,13 +196,13 @@ const commandJsonData = [
 	...Array.from(client.slashCommands.values()).map((c) => {
 		const commandData =
 			c.data instanceof SlashCommandBuilder ? c.data.toJSON() : c.data;
-		commandData.integration_types = [1];
+		commandData.integration_types = [0, 1];
 		commandData.contexts = [0, 1, 2];
 		return commandData;
 	}),
 	...Array.from(client.contextCommands.values()).map((c) => {
 		const commandData = c.data;
-		commandData.integration_types = [1];
+		commandData.integration_types = [0, 1];
 		commandData.contexts = [0, 1, 2];
 		return commandData;
 	}),
