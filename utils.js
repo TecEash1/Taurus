@@ -190,12 +190,20 @@ async function fetchThreadMessages(Gemini_API_KEY, message) {
 			message.reference.messageId,
 		);
 
+		const startStrings = [
+			"Response to message by",
+			"A message has been deleted",
+			"Reply thread history",
+		];
+
 		if (
 			originalMessage.author.id !== message.client.user.id ||
 			(originalMessage.embeds.length > 0 &&
-				!originalMessage.embeds[0].footer.text.startsWith(
-					"Response to message by",
-				))
+				(!originalMessage.embeds[0].footer ||
+					!originalMessage.embeds[0].footer.text ||
+					!startStrings.some((str) =>
+						originalMessage.embeds[0].footer.text.startsWith(str),
+					)))
 		) {
 			return {
 				userQuestion: null,
