@@ -198,7 +198,7 @@ async function fetchThreadMessages(Gemini_API_KEY, message) {
 				))
 		) {
 			return {
-				userQuestion,
+				userQuestion: null,
 				threadMessages: null,
 				messageDeleted: "threadDeleted",
 			};
