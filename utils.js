@@ -49,11 +49,17 @@ async function handleGeminiError(err, loadingMsg) {
 			const quota_error = new EmbedBuilder()
 				.setTitle("⚠️ An Error Occurred")
 				.setDescription(
-					"There are alot of requests at the moment Please try again later, or in a few minutes. \n*If this issue persists after a few minutes, please contact the Developers.*\n - *We are aware of these issues and apologize for the inconvenience.* \n\n> - Token Limit for this minute has been reached.",
+					"There are a lot of requests at the moment. Please try again later, or in a few minutes. \n*If this issue persists after a few minutes, please contact the Developers.* \n - *We are aware of these issues and apologize for the inconvenience.* \n\n> - Token Limit for this minute has been reached.",
 				)
 				.setColor("Red");
 
-			return await loadingMsg.edit({ embeds: [quota_error] });
+			for (let i = 10; i > 0; i--) {
+				quota_error.setFooter({ text: `Retrying request in (${i})` });
+				await loadingMsg.edit({ embeds: [quota_error] });
+				await new Promise((resolve) => setTimeout(resolve, 1000));
+			}
+
+			return "quota_error";
 		case "Cannot send an empty message":
 		case "response.text is not a function":
 			const error = new EmbedBuilder()

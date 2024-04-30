@@ -70,48 +70,56 @@ module.exports = {
 
 		const user = message.author;
 
-		const loadingEmbed = new EmbedBuilder()
-			.setTitle("**⌛Loading your response**")
-			.setDescription(
-				"*TaurusAI may display innacurate/offensive info.*\n\n> *I am powered by Google's Generative AI, [Gemini](https://gemini.google.com) and was integrated by <@719815864135712799>.*",
-			)
-			.setFooter({
-				text: "This may take a while",
-				iconURL: `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png?size=256`,
-			})
-			.setTimestamp();
-		const loadingMsg = await interaction.reply({ embeds: [loadingEmbed] });
-		const loadingDots = [" ⌛ ", " ⏳ "];
-		let i = 0;
-		const loadingInterval = setInterval(() => {
-			loadingEmbed.setTitle(`**${loadingDots[i]} Loading your response**`);
-			loadingMsg.edit({ embeds: [loadingEmbed] });
-			i = (i + 1) % loadingDots.length;
-		}, 2000);
-
-		const personalityFilePath = path.join(
-			__dirname + "../../../../personality.txt",
-		);
-		const personalityContent = await fs.readFile(personalityFilePath, "utf-8");
-		const personalityLines = personalityContent.split("\n");
-
-		const botMention = `<@${message.client.user.id}>`;
-
-		if (await checkGeminiApiKey(Gemini_API_KEY, false, message)) return;
-		userQuestion = message.content.replace(botMention, "").trim();
-
-		const user_status = message.member?.presence.clientStatus || {};
-		const status_devices = Object.entries(user_status)
-			.map(([platform, status]) => `${platform}: ${status}`)
-			.join("\n");
-
-		parts1 = `${personalityLines}\n Please greet the user with a greeting and then their name which is: <@${message.author.id}> and limit your responses to 2000 characters or less.`;
-
-		if (Object.keys(user_status).length) {
-			parts1 += ` The user's status/presence is currently:\n${status_devices}`;
-		}
+		let loadingInterval;
+		let loadingMsg;
 
 		async function run() {
+			const loadingEmbed = new EmbedBuilder()
+				.setTitle("**⌛Loading your response**")
+				.setDescription(
+					"*TaurusAI may display innacurate/offensive info.*\n\n> *I am powered by Google's Generative AI, [Gemini](https://gemini.google.com) and was integrated by <@719815864135712799>.*",
+				)
+				.setFooter({
+					text: "This may take a while",
+					iconURL: `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png?size=256`,
+				})
+				.setTimestamp();
+			loadingMsg = loadingMsg
+				? await loadingMsg.edit({ embeds: [loadingEmbed] })
+				: await interaction.reply({ embeds: [loadingEmbed] });
+			const loadingDots = [" ⌛ ", " ⏳ "];
+			let i = 0;
+			const loadingInterval = setInterval(() => {
+				loadingEmbed.setTitle(`**${loadingDots[i]} Loading your response**`);
+				loadingMsg.edit({ embeds: [loadingEmbed] });
+				i = (i + 1) % loadingDots.length;
+			}, 2000);
+
+			const personalityFilePath = path.join(
+				__dirname + "../../../../personality.txt",
+			);
+			const personalityContent = await fs.readFile(
+				personalityFilePath,
+				"utf-8",
+			);
+			const personalityLines = personalityContent.split("\n");
+
+			const botMention = `<@${message.client.user.id}>`;
+
+			if (await checkGeminiApiKey(Gemini_API_KEY, false, message)) return;
+			userQuestion = message.content.replace(botMention, "").trim();
+
+			const user_status = message.member?.presence.clientStatus || {};
+			const status_devices = Object.entries(user_status)
+				.map(([platform, status]) => `${platform}: ${status}`)
+				.join("\n");
+
+			parts1 = `${personalityLines}\n Please greet the user with a greeting and then their name which is: <@${message.author.id}> and limit your responses to 2000 characters or less.`;
+
+			if (Object.keys(user_status).length) {
+				parts1 += ` The user's status/presence is currently:\n${status_devices}`;
+			}
+
 			const generationConfig = {
 				maxOutputTokens: 750,
 			};
@@ -163,13 +171,17 @@ module.exports = {
 			);
 		}
 
-		try {
-			await run();
-		} catch (err) {
-			clearInterval(loadingInterval);
-			sendTypingInterval && clearInterval(sendTypingInterval);
+		let errorType = null;
+		do {
+			try {
+				await run();
+				errorType = null;
+			} catch (err) {
+				clearInterval(loadingInterval);
+				sendTypingInterval && clearInterval(sendTypingInterval);
 
-			handleGeminiError(err, loadingMsg);
-		}
+				errorType = await handleGeminiError(err, loadingMsg);
+			}
+		} while (errorType === "quota_error");
 	},
 };
