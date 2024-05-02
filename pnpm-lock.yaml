@@ -9,14 +9,14 @@ importers:
   .:
     dependencies:
       '@google/generative-ai':
-        specifier: ^0.7.1
-        version: 0.7.1
+        specifier: ^0.9.0
+        version: 0.9.0
       '@iamtraction/google-translate':
         specifier: ^2.0.1
         version: 2.0.1
       '@tensorflow/tfjs-node':
-        specifier: ^4.18.0
-        version: 4.18.0(seedrandom@3.0.5)
+        specifier: ^4.19.0
+        version: 4.19.0(seedrandom@3.0.5)
       api:
         specifier: ^6.1.1
         version: 6.1.1(openapi-types@12.1.3)
@@ -30,8 +30,8 @@ importers:
         specifier: ^5.3.0
         version: 5.3.0
       discord-api-types:
-        specifier: ^0.37.79
-        version: 0.37.79
+        specifier: ^0.37.83
+        version: 0.37.83
       discord.js:
         specifier: ^14.14.1
         version: 14.14.1
@@ -43,7 +43,7 @@ importers:
         version: 2.30.1
       nsfwjs:
         specifier: ^4.1.0
-        version: 4.1.0(@tensorflow/tfjs@4.18.0(seedrandom@3.0.5))
+        version: 4.1.0(@tensorflow/tfjs@4.19.0(seedrandom@3.0.5))
       os: {specifier: ^0.1.2, version: 0.1.2}
     devDependencies:
       prettier:
@@ -63,16 +63,16 @@ packages:
     resolution: {integrity: sha512-y5+tLQyV8pg3fsiln67BVLD1P13Eg4lh5RW9mF0zUuvLrv9uIQ4MCL+CRT+FTsBlBjcIan6PGsLcBN0m3ClUyQ==}
     engines: {node: '>=6.9.0'}
 
-  '@babel/helper-validator-identifier@7.22.20':
-    resolution: {integrity: sha512-Y4OZ+ytlatR8AI+8KZfKuL5urKp7qey08ha31L8b3BwewJAoJamTzyvxPR/5D+KkdJCGPq/+8TukHBlY10FX9A==}
+  '@babel/helper-validator-identifier@7.24.5':
+    resolution: {integrity: sha512-3q93SSKX2TWCG30M2G2kwaKeTYgEUp5Snjuj8qm729SObL6nbtUldAi37qbxkD5gg3xnBio+f9nqpSepGZMvxA==}
     engines: {node: '>=6.9.0'}
 
-  '@babel/highlight@7.24.2':
-    resolution: {integrity: sha512-Yac1ao4flkTxTteCDZLEvdxg2fZfz1v8M4QpaGypq/WPDqg3ijHYbDfs+LG5hvzSoqaSZ9/Z9lKSP3CjZjv+pA==}
+  '@babel/highlight@7.24.5':
+    resolution: {integrity: sha512-8lLmua6AVh/8SLJRRVD6V8p73Hir9w5mJrhE+IPpILG31KKlI9iz5zmBYKcWPS59qSfgP9RaSBQSHHE81WKuEw==}
     engines: {node: '>=6.9.0'}
 
-  '@babel/runtime@7.24.4':
-    resolution: {integrity: sha512-dkxf7+hn8mFBwKjs9bvBlArzLVxVbS8usaPUDd5p2a9JCL9tB8OaOVN1isD4+Xyk4ns89/xeOmbQvgdK7IIVdA==}
+  '@babel/runtime@7.24.5':
+    resolution: {integrity: sha512-Nms86NXrsaeU9vbBJKni6gXiEXZ4CVpYVzEjDH9Sb8vmZ3UljyA1GSOJl/6LGPO8EHLuSF9H+IxNXHPX8QHJ4g==}
     engines: {node: '>=6.9.0'}
 
   '@discordjs/builders@1.7.0':
@@ -110,8 +110,8 @@ packages:
     resolution: {integrity: sha512-vBZP4NlzfOlerQTnba4aqZoMhE/a9HY7HRqoOPaETQcSQuWEIyZMHGfVu6w9wGtGK5fED5qRs2DteVCjOH60sA==}
     engines: {node: '>=14'}
 
-  '@google/generative-ai@0.7.1':
-    resolution: {integrity: sha512-WTjMLLYL/xfA5BW6xAycRPiAX7FNHKAxrid/ayqC1QMam0KAK0NbMeS9Lubw80gVg5xFMLE+H7pw4wdNzTOlxw==}
+  '@google/generative-ai@0.9.0':
+    resolution: {integrity: sha512-tJo+4ITV6yDo0EatG9mENOevQp6NyB28LntujzkehXDK5lY/fK7hJdelBJCriVMivS9lfHKjfML9lMQMOWuuCA==}
     engines: {node: '>=18.0.0'}
 
   '@humanwhocodes/momoa@2.0.4':
@@ -190,44 +190,44 @@ packages:
     resolution: {integrity: sha512-BxcYGzgEsdlG0dKAyOm0ehLGm2CafIrfQTZGWgkfKYbj+pNNsorZ7EotuZukc2MT70E0UbppVbtpBrqpzVzjNA==}
     engines: {node: '>=v14.0.0', npm: '>=7.0.0'}
 
-  '@tensorflow/tfjs-backend-cpu@4.18.0':
-    resolution: {integrity: sha512-zk6NyGGsv0mCDnc5xWxLB5Zi8GaHVI2gg7KC0FSw/r5wW9SfA3ZIqUHVZhbIVhNqZSWy6L/+EIJa7l6q1XCkrg==}
+  '@tensorflow/tfjs-backend-cpu@4.19.0':
+    resolution: {integrity: sha512-7pT05Ea6GTXjbqRgkmayZRYvaiNl3LLk1TyfUvC8iIqMw5d7p4Wgte2pfM2gMbIZ/opOxURhFYuI0FiQvUrW6g==}
     engines: {yarn: '>= 1.3.2'}
     peerDependencies:
-      '@tensorflow/tfjs-core': 4.18.0
+      '@tensorflow/tfjs-core': 4.19.0
 
-  '@tensorflow/tfjs-backend-webgl@4.18.0':
-    resolution: {integrity: sha512-ZLQ8MnWnIttMDqHepEzPL0Y4HkTePl8+AaYm9AcNnDUK7VF2jn+BXcTHCUOGfiwKu/OMwRc6osDrjxr0cCqNrA==}
+  '@tensorflow/tfjs-backend-webgl@4.19.0':
+    resolution: {integrity: sha512-R0DC1W65lqTOccCwxMhH+VOKCgSrhd9GEejIIGhjeXt6oZlACFnOx4SuUr/qKLCDsL5I4E9iFLxAJMmsfYvARw==}
     engines: {yarn: '>= 1.3.2'}
     peerDependencies:
-      '@tensorflow/tfjs-core': 4.18.0
+      '@tensorflow/tfjs-core': 4.19.0
 
-  '@tensorflow/tfjs-converter@4.18.0':
-    resolution: {integrity: sha512-b7utNMvmI986OPaQvDyHoiHKiIyip7ubSjG4KzTcFOWEKTsirtHxRp/6QKY/XSuH3AJK9Switu1/B5QC7xR2Zg==}
+  '@tensorflow/tfjs-converter@4.19.0':
+    resolution: {integrity: sha512-xIOE6enaVHPYCXKpHxJnUlN8hzlcQkgFSymHjBmdDnNCresuRwBGz4dqYAQMeQG21Ei3lxCQFdDDH7aSvUEAPw==}
     peerDependencies:
-      '@tensorflow/tfjs-core': 4.18.0
+      '@tensorflow/tfjs-core': 4.19.0
 
-  '@tensorflow/tfjs-core@4.18.0':
-    resolution: {integrity: sha512-wjyq+F8AZJjhtr5xUBAON4VrNBXr9Poows/LnRh1K7wS+w41sCk0EQfeo6NfgUZXbHE/jgcqU6+fZDUKt3qRrg==}
+  '@tensorflow/tfjs-core@4.19.0':
+    resolution: {integrity: sha512-GZ0d53PG0HGQCC7hbWv1qDnZctHYe/cafHZrBY5eNeQjQE6fBr3NsR5GfLadT0TELwmX9/nyritGDzvy6xmzHQ==}
     engines: {yarn: '>= 1.3.2'}
 
-  '@tensorflow/tfjs-data@4.18.0':
-    resolution: {integrity: sha512-JGfEwq8a0nEXwwU04/PW7O6kZ3FdqAd6ofMboM9qwGTv47QdeO/G1657sy4N21Q/qiz5qFDbGLhim3Nq9gZm9g==}
+  '@tensorflow/tfjs-data@4.19.0':
+    resolution: {integrity: sha512-n0ZgJp5UhhBatohUt9pXSCCApusK+1Flyk6yDrQYuxOTjhRppd6jYrF7LCDG3hMFi3QLGl0jab1zYrn9BwtC/w==}
     peerDependencies:
-      '@tensorflow/tfjs-core': 4.18.0
+      '@tensorflow/tfjs-core': 4.19.0
       seedrandom: ^3.0.5
 
-  '@tensorflow/tfjs-layers@4.18.0':
-    resolution: {integrity: sha512-9AyxUdvjMDbDOkNzdkMRToJZF/le5ia8X3lVfGRGxzsuyoWDBGlV9V1ICufD+Z8sODXVyu+cgE8kAMtVK4aHFA==}
+  '@tensorflow/tfjs-layers@4.19.0':
+    resolution: {integrity: sha512-NufvuRaZdIyoG+R13d7oL8G5Bywox+ihPMiMZ3tWU+me8C8Y0pVC69mrnhOS9R8an7GDxKKSTTNEZhUvPvMGiQ==}
     peerDependencies:
-      '@tensorflow/tfjs-core': 4.18.0
+      '@tensorflow/tfjs-core': 4.19.0
 
-  '@tensorflow/tfjs-node@4.18.0':
-    resolution: {integrity: sha512-jat7J/K8OEKyO/w20PXN8OBQMwdUMQxfPpNGsyS21lq93dr6g+z4vVH0RT+soPsVX2NvdIrAxHT3RWkinSCikw==}
+  '@tensorflow/tfjs-node@4.19.0':
+    resolution: {integrity: sha512-1HLIAuu5azP8SW7t5EZc1W5VOdjWndJYz1N1agz0It/tMtnuWIdAfcY08VjfuiI/NhAwuPShehqv6CZ3SYh+Vg==}
     engines: {node: '>=8.11.0'}
 
-  '@tensorflow/tfjs@4.18.0':
-    resolution: {integrity: sha512-MjA2M91wSkTkpFSuyQAuZm+DT9Y7DFu3rsTaO1BjCbf1S7o8DgJPKMmh6hk6uEn6/SBBbZVXPu+ZTQ/SyrP2Pw==}
+  '@tensorflow/tfjs@4.19.0':
+    resolution: {integrity: sha512-d2A1lTc6my7GJ5LwqzXa+igJ5+18exwsnaphZ3roi5nJ197uwxVSMIc2vSJnqZz1KajC5/mZgQr67EZrpTFlBg==}
     hasBin: true
 
   '@ts-morph/common@0.18.1':
@@ -245,8 +245,8 @@ packages:
   '@types/node-fetch@2.6.11':
     resolution: {integrity: sha512-24xFj9R5+rfQJLRyM56qh+wnVSYhyXC2tkoBndtY0U+vubqNsYXGjufB2nn8Q6gt0LrARwL6UBtMCSVCwl4B1g==}
 
-  '@types/node@20.12.7':
-    resolution: {integrity: sha512-wq0cICSkRLVaf3UGLMGItu/PtdY7oaXaI/RVU+xliKVOtRna3PRY57ZDfztpDL0n11vfymMUnXv8QwYCO7L1wg==}
+  '@types/node@20.12.8':
+    resolution: {integrity: sha512-NU0rJLJnshZWdE/097cdCBbyW1h4hEg0xpovcoAQYHl8dnEyp/NAOiE45pvc+Bd1Dt+2r94v2eGFpQJ4R7g+2w==}
 
   '@types/offscreencanvas@2019.3.0':
     resolution: {integrity: sha512-esIJx9bQg+QYF0ra8GnvfianIY8qWB0GBx54PK5Eps6m+xTj86KLavHv6qDhzKcu5UUOgNfJ2pWaIIV7TRUd9Q==}
@@ -290,8 +290,8 @@ packages:
       ajv:
         optional: true
 
-  ajv@8.12.0:
-    resolution: {integrity: sha512-sRu1kpcO9yLtYxBKvqfTeh9KzZEwO3STyX1HT+4CaDzC6HpTGYhIhPIzj9XuKU7KYDwnaeh5hcOwjy1QuJzBPA==}
+  ajv@8.13.0:
+    resolution: {integrity: sha512-PRA911Blj99jR5RMeTunVbNXMF6Lp4vZXnk5GQjcnUWUTsrXtekg/pnmFFI2u/I36Y/2bITGS30GZCXei6uNkA==}
 
   ansi-regex@5.0.1:
     resolution: {integrity: sha512-quJQXlTSUGL2LH9SUXo8VwsY4soanhgo6LNSm84E1LBcE8s3O0wpdiRzyR9z/ZZJMlMWv37qOOb9pdJlMUEKFQ==}
@@ -507,8 +507,8 @@ packages:
   discord-api-types@0.37.61:
     resolution: {integrity: sha512-o/dXNFfhBpYHpQFdT6FWzeO7pKc838QeeZ9d91CfVAtpr5XLK4B/zYxQbYgPdoMiTDvJfzcsLW5naXgmHGDNXw==}
 
-  discord-api-types@0.37.79:
-    resolution: {integrity: sha512-jblKMZL5f9t/pfUyhHNey8Lb9yVCcBVIPxz/JTY0raAmfj7CuFXdl9m5o/+iiB7E0vv1Kz9V7Ao5HtLRc2gH1Q==}
+  discord-api-types@0.37.83:
+    resolution: {integrity: sha512-urGGYeWtWNYMKnYlZnOnDHm8fVRffQs3U0SpE8RHeiuLKb/u92APS8HoQnPTFbnXmY1vVnXjXO4dOxcAn3J+DA==}
 
   discord.js@14.14.1:
     resolution: {integrity: sha512-/hUVzkIerxKHyRKopJy5xejp4MYKDPTszAnpYxzVVv4qJYf+Tkt+jnT2N29PIPschicaEEpXwF2ARrTYHYwQ5w==}
@@ -1406,19 +1406,19 @@ snapshots:
 
   '@babel/code-frame@7.24.2':
     dependencies:
-      '@babel/highlight': 7.24.2
+      '@babel/highlight': 7.24.5
       picocolors: 1.0.0
 
-  '@babel/helper-validator-identifier@7.22.20': {}
+  '@babel/helper-validator-identifier@7.24.5': {}
 
-  '@babel/highlight@7.24.2':
+  '@babel/highlight@7.24.5':
     dependencies:
-      '@babel/helper-validator-identifier': 7.22.20
+      '@babel/helper-validator-identifier': 7.24.5
       chalk: 2.4.2
       js-tokens: 4.0.0
       picocolors: 1.0.0
 
-  '@babel/runtime@7.24.4':
+  '@babel/runtime@7.24.5':
     dependencies:
       regenerator-runtime: 0.14.1
 
@@ -1473,7 +1473,7 @@ snapshots:
 
   '@fastify/busboy@2.1.1': {}
 
-  '@google/generative-ai@0.7.1': {}
+  '@google/generative-ai@0.9.0': {}
 
   '@humanwhocodes/momoa@2.0.4': {}
 
@@ -1510,12 +1510,12 @@ snapshots:
       '@nodelib/fs.scandir': 2.1.5
       fastq: 1.17.1
 
-  '@readme/better-ajv-errors@1.6.0(ajv@8.12.0)':
+  '@readme/better-ajv-errors@1.6.0(ajv@8.13.0)':
     dependencies:
       '@babel/code-frame': 7.24.2
-      '@babel/runtime': 7.24.4
+      '@babel/runtime': 7.24.5
       '@humanwhocodes/momoa': 2.0.4
-      ajv: 8.12.0
+      ajv: 8.13.0
       chalk: 4.1.2
       json-to-ast: 2.1.0
       jsonpointer: 5.0.1
@@ -1551,10 +1551,10 @@ snapshots:
       '@apidevtools/openapi-schemas': 2.1.0
       '@apidevtools/swagger-methods': 3.0.2
       '@jsdevtools/ono': 7.1.3
-      '@readme/better-ajv-errors': 1.6.0(ajv@8.12.0)
+      '@readme/better-ajv-errors': 1.6.0(ajv@8.13.0)
       '@readme/json-schema-ref-parser': 1.2.0
-      ajv: 8.12.0
-      ajv-draft-04: 1.0.0(ajv@8.12.0)
+      ajv: 8.13.0
+      ajv-draft-04: 1.0.0(ajv@8.13.0)
       call-me-maybe: 1.0.2
       openapi-types: 12.1.3
 
@@ -1576,25 +1576,25 @@ snapshots:
 
   '@sapphire/snowflake@3.5.1': {}
 
-  '@tensorflow/tfjs-backend-cpu@4.18.0(@tensorflow/tfjs-core@4.18.0)':
+  '@tensorflow/tfjs-backend-cpu@4.19.0(@tensorflow/tfjs-core@4.19.0)':
     dependencies:
-      '@tensorflow/tfjs-core': 4.18.0
+      '@tensorflow/tfjs-core': 4.19.0
       '@types/seedrandom': 2.4.34
       seedrandom: 3.0.5
 
-  '@tensorflow/tfjs-backend-webgl@4.18.0(@tensorflow/tfjs-core@4.18.0)':
+  '@tensorflow/tfjs-backend-webgl@4.19.0(@tensorflow/tfjs-core@4.19.0)':
     dependencies:
-      '@tensorflow/tfjs-backend-cpu': 4.18.0(@tensorflow/tfjs-core@4.18.0)
-      '@tensorflow/tfjs-core': 4.18.0
+      '@tensorflow/tfjs-backend-cpu': 4.19.0(@tensorflow/tfjs-core@4.19.0)
+      '@tensorflow/tfjs-core': 4.19.0
       '@types/offscreencanvas': 2019.3.0
       '@types/seedrandom': 2.4.34
       seedrandom: 3.0.5
 
-  '@tensorflow/tfjs-converter@4.18.0(@tensorflow/tfjs-core@4.18.0)':
+  '@tensorflow/tfjs-converter@4.19.0(@tensorflow/tfjs-core@4.19.0)':
     dependencies:
-      '@tensorflow/tfjs-core': 4.18.0
+      '@tensorflow/tfjs-core': 4.19.0
 
-  '@tensorflow/tfjs-core@4.18.0':
+  '@tensorflow/tfjs-core@4.19.0':
     dependencies:
       '@types/long': 4.0.2
       '@types/offscreencanvas': 2019.7.3
@@ -1606,9 +1606,9 @@ snapshots:
     transitivePeerDependencies:
       - encoding
 
-  '@tensorflow/tfjs-data@4.18.0(@tensorflow/tfjs-core@4.18.0)(seedrandom@3.0.5)':
+  '@tensorflow/tfjs-data@4.19.0(@tensorflow/tfjs-core@4.19.0)(seedrandom@3.0.5)':
     dependencies:
-      '@tensorflow/tfjs-core': 4.18.0
+      '@tensorflow/tfjs-core': 4.19.0
       '@types/node-fetch': 2.6.11
       node-fetch: 2.6.13
       seedrandom: 3.0.5
@@ -1616,14 +1616,14 @@ snapshots:
     transitivePeerDependencies:
       - encoding
 
-  '@tensorflow/tfjs-layers@4.18.0(@tensorflow/tfjs-core@4.18.0)':
+  '@tensorflow/tfjs-layers@4.19.0(@tensorflow/tfjs-core@4.19.0)':
     dependencies:
-      '@tensorflow/tfjs-core': 4.18.0
+      '@tensorflow/tfjs-core': 4.19.0
 
-  '@tensorflow/tfjs-node@4.18.0(seedrandom@3.0.5)':
+  '@tensorflow/tfjs-node@4.19.0(seedrandom@3.0.5)':
     dependencies:
       '@mapbox/node-pre-gyp': 1.0.9
-      '@tensorflow/tfjs': 4.18.0(seedrandom@3.0.5)
+      '@tensorflow/tfjs': 4.19.0(seedrandom@3.0.5)
       adm-zip: 0.5.12
       google-protobuf: 3.21.2
       https-proxy-agent: 2.2.4
@@ -1635,14 +1635,14 @@ snapshots:
       - seedrandom
       - supports-color
 
-  '@tensorflow/tfjs@4.18.0(seedrandom@3.0.5)':
+  '@tensorflow/tfjs@4.19.0(seedrandom@3.0.5)':
     dependencies:
-      '@tensorflow/tfjs-backend-cpu': 4.18.0(@tensorflow/tfjs-core@4.18.0)
-      '@tensorflow/tfjs-backend-webgl': 4.18.0(@tensorflow/tfjs-core@4.18.0)
-      '@tensorflow/tfjs-converter': 4.18.0(@tensorflow/tfjs-core@4.18.0)
-      '@tensorflow/tfjs-core': 4.18.0
-      '@tensorflow/tfjs-data': 4.18.0(@tensorflow/tfjs-core@4.18.0)(seedrandom@3.0.5)
-      '@tensorflow/tfjs-layers': 4.18.0(@tensorflow/tfjs-core@4.18.0)
+      '@tensorflow/tfjs-backend-cpu': 4.19.0(@tensorflow/tfjs-core@4.19.0)
+      '@tensorflow/tfjs-backend-webgl': 4.19.0(@tensorflow/tfjs-core@4.19.0)
+      '@tensorflow/tfjs-converter': 4.19.0(@tensorflow/tfjs-core@4.19.0)
+      '@tensorflow/tfjs-core': 4.19.0
+      '@tensorflow/tfjs-data': 4.19.0(@tensorflow/tfjs-core@4.19.0)(seedrandom@3.0.5)
+      '@tensorflow/tfjs-layers': 4.19.0(@tensorflow/tfjs-core@4.19.0)
       argparse: 1.0.10
       chalk: 4.1.2
       core-js: 3.29.1
@@ -1667,10 +1667,10 @@ snapshots:
 
   '@types/node-fetch@2.6.11':
     dependencies:
-      '@types/node': 20.12.7
+      '@types/node': 20.12.8
       form-data: 4.0.0
 
-  '@types/node@20.12.7':
+  '@types/node@20.12.8':
     dependencies:
       undici-types: 5.26.5
 
@@ -1682,7 +1682,7 @@ snapshots:
 
   '@types/ws@8.5.9':
     dependencies:
-      '@types/node': 20.12.7
+      '@types/node': 20.12.8
 
   '@vladfrangu/async_event_emitter@2.2.4': {}
 
@@ -1702,11 +1702,11 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  ajv-draft-04@1.0.0(ajv@8.12.0):
+  ajv-draft-04@1.0.0(ajv@8.13.0):
     optionalDependencies:
-      ajv: 8.12.0
+      ajv: 8.13.0
 
-  ajv@8.12.0:
+  ajv@8.13.0:
     dependencies:
       fast-deep-equal: 3.1.3
       json-schema-traverse: 1.0.0
@@ -1954,7 +1954,7 @@ snapshots:
 
   discord-api-types@0.37.61: {}
 
-  discord-api-types@0.37.79: {}
+  discord-api-types@0.37.83: {}
 
   discord.js@14.14.1:
     dependencies:
@@ -2260,7 +2260,7 @@ snapshots:
 
   json-schema-to-ts@2.12.0:
     dependencies:
-      '@babel/runtime': 7.24.4
+      '@babel/runtime': 7.24.5
       '@types/json-schema': 7.0.15
       ts-algebra: 1.2.2
 
@@ -2435,9 +2435,9 @@ snapshots:
       gauge: 3.0.2
       set-blocking: 2.0.0
 
-  nsfwjs@4.1.0(@tensorflow/tfjs@4.18.0(seedrandom@3.0.5)):
+  nsfwjs@4.1.0(@tensorflow/tfjs@4.19.0(seedrandom@3.0.5)):
     dependencies:
-      '@tensorflow/tfjs': 4.18.0(seedrandom@3.0.5)
+      '@tensorflow/tfjs': 4.19.0(seedrandom@3.0.5)
 
   oas-kit-common@1.0.8:
     dependencies:

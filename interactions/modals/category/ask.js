@@ -76,10 +76,10 @@ module.exports = {
 				.map(([platform, status]) => `${platform}: ${status}`)
 				.join("\n");
 
-			parts1 = `${personalityLines}\n Please greet the user with a greeting and then their name which is: <@${interaction.user.id}> and limit your responses to 2000 characters or less.`;
+			instruction = `${personalityLines}\n Please greet the user with a greeting and then their name which is: <@${interaction.user.id}> and limit your responses to 2000 characters or less.`;
 
 			if (Object.keys(user_status).length) {
-				parts1 += ` The user's status/presence is currently:\n${status_devices}`;
+				instruction += ` The user's status/presence is currently:\n${status_devices}`;
 			}
 
 			const generationConfig = {
@@ -89,14 +89,7 @@ module.exports = {
 			const model = genAI.getGenerativeModel(
 				{
 					model: "gemini-1.5-pro-latest",
-					systemInstruction: {
-						role: "system",
-						parts: [
-							{
-								text: parts1,
-							},
-						],
-					},
+					systemInstruction: instruction,
 				},
 				{
 					safetySettings,
