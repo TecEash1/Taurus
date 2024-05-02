@@ -49,12 +49,12 @@ async function handleGeminiError(err, loadingMsg) {
 			const quota_error = new EmbedBuilder()
 				.setTitle("⚠️ An Error Occurred")
 				.setDescription(
-					"There are a lot of requests at the moment. Please try again later, or in a few minutes. \n*If this issue persists after a few minutes, please contact the Developers.* \n - *We are aware of these issues and apologize for the inconvenience.* \n\n> - Token Limit for this minute has been reached.",
+					"There are a lot of requests at the moment. Please try again later, or in a few minutes. \n▸ *If this issue persists after a few minutes, please contact the Developers.* \n - *We are aware of these issues and apologize for the inconvenience.* \n> - Token Limit for this minute has been reached.",
 				)
 				.setColor("Red");
 
 			for (let i = 10; i > 0; i--) {
-				quota_error.setFooter({ text: `Retrying request in (${i})` });
+				quota_error.setFooter({ text: `⏱️ Retrying request in (${i})` });
 				await loadingMsg.edit({ embeds: [quota_error] });
 				await new Promise((resolve) => setTimeout(resolve, 1000));
 			}
@@ -65,7 +65,7 @@ async function handleGeminiError(err, loadingMsg) {
 			const error = new EmbedBuilder()
 				.setTitle("⚠️ An Error Occurred")
 				.setDescription(
-					"An error occurred while processing your request. Please try again later, or in a few minutes. \n*If this issue persists, please contact the Developers.* \n\n> - Generated response may be too long. *(Fix this by specifying for the generated response to be smaller, e.g. 10 Lines)*\n> - Token Limit for this minute may have been reached.",
+					"An error occurred while processing your request. Please try again later, or in a few minutes. \n▸ *If this issue persists, please contact the Developers.* \n> - Generated response may be too long. *(Fix this by specifying for the generated response to be smaller, e.g. 10 Lines)*\n> - Token Limit for this minute may have been reached.",
 				)
 				.setColor("Red");
 
@@ -74,7 +74,7 @@ async function handleGeminiError(err, loadingMsg) {
 			const error_internal = new EmbedBuilder()
 				.setTitle("⚠️ An Error Occurred")
 				.setDescription(
-					"An error occurred while processing your request. This error originated from Google's side, not ours.  \n*If this issue persists, please contact the Developers.* \n\n> - Please retry and make another request.",
+					"An error occurred while processing your request. This error originated from Google's side, not ours.  \n▸ *If this issue persists, please contact the Developers.* \n> - Please retry and make another request.",
 				)
 				.setColor("Red");
 
@@ -84,7 +84,7 @@ async function handleGeminiError(err, loadingMsg) {
 			const error_unknown = new EmbedBuilder()
 				.setTitle("⚠️ An Error Occurred")
 				.setDescription(
-					"An unknown error occurred while processing your request. Please try again later, or in a few minutes. \n*If this issue persists, please contact the Developers.*\n> - Token Limit for this minute may have been reached.",
+					"An unknown error occurred while processing your request. Please try again later, or in a few minutes. \n▸ *If this issue persists, please contact the Developers.*\n> - Token Limit for this minute may have been reached.",
 				)
 				.setColor("Red");
 
