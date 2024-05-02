@@ -61,15 +61,14 @@ async function handleGeminiError(err, loadingMsg) {
 
 			return "quota_error";
 		case "Cannot send an empty message":
-		case "response.text is not a function":
-			const error = new EmbedBuilder()
+			const error_empty = new EmbedBuilder()
 				.setTitle("⚠️ An Error Occurred")
 				.setDescription(
 					"An error occurred while processing your request. Please try again later, or in a few minutes. \n▸ *If this issue persists, please contact the Developers.* \n> - Generated response may be too long. *(Fix this by specifying for the generated response to be smaller, e.g. 10 Lines)*\n> - Token Limit for this minute may have been reached.",
 				)
 				.setColor("Red");
 
-			return await loadingMsg.edit({ embeds: [error] });
+			return await loadingMsg.edit({ embeds: [error_empty] });
 		case "[GoogleGenerativeAI Error]: Error fetching from https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro-latest:generateContent: [500 Internal Server Error] An internal error has occurred. Please retry or report in https://developers.generativeai.google/guide/troubleshooting":
 			const error_internal = new EmbedBuilder()
 				.setTitle("⚠️ An Error Occurred")
@@ -103,15 +102,15 @@ async function handleResponse(
 ) {
 	const result = await chat.sendMessage(userQuestion);
 	const response = await result.response;
+	let responseText = response.text();
 
 	const responseLength = response.text().length;
 	if (responseLength > 2000) {
-		response.text =
-			response.text().substring(0, 1928 - "... \n\n".length) +
+		responseText =
+			response.text().substring(0, 1936 - "... \n\n".length) +
 			"... \n\n*Response was cut short due to Discords character limit of 2000*";
 	}
 
-	let responseText = response.text();
 	const regex = /<@&?\d+>/g;
 	let match;
 
