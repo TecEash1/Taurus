@@ -201,6 +201,9 @@ async function fetchThreadMessages(Gemini_API_KEY, message) {
 			"Reply thread history",
 		];
 
+		const linkRegex =
+			/https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/;
+
 		if (
 			originalMessage.author.id !== message.client.user.id ||
 			(originalMessage.embeds.length > 0 &&
@@ -208,7 +211,8 @@ async function fetchThreadMessages(Gemini_API_KEY, message) {
 					!originalMessage.embeds[0].footer.text ||
 					!startStrings.some((str) =>
 						originalMessage.embeds[0].footer.text.startsWith(str),
-					)))
+					)) &&
+				!linkRegex.test(originalMessage.content))
 		) {
 			return {
 				userQuestion: null,
@@ -224,7 +228,8 @@ async function fetchThreadMessages(Gemini_API_KEY, message) {
 				currentMessage.reference &&
 				!(
 					currentMessage.author.id === message.client.user.id &&
-					currentMessage.embeds.length > 0
+					currentMessage.embeds.length > 0 &&
+					!linkRegex.test(currentMessage.content)
 				)
 			) {
 				currentMessage = await message.channel.messages.fetch(
@@ -240,6 +245,8 @@ async function fetchThreadMessages(Gemini_API_KEY, message) {
 				} else if (
 					sender === "model" &&
 					currentMessage.embeds.length > 0 &&
+					currentMessage.embeds[0].footer &&
+					currentMessage.embeds[0].footer.text &&
 					currentMessage.embeds[0].footer.text.startsWith(
 						"Response to message by",
 					)
