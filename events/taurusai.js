@@ -14,6 +14,7 @@ const {
 	handleResponse,
 	checkGeminiApiKey,
 	fetchThreadMessages,
+	processAttachments,
 } = require("../utils");
 const genAI = new GoogleGenerativeAI(Gemini_API_KEY);
 
@@ -24,6 +25,8 @@ module.exports = {
 		if (message.author.bot || message.author.id === message.client.user.id)
 			return;
 		if ([18, 21].includes(message.type)) return;
+
+		const attachments = await processAttachments(message);
 
 		let userQuestion;
 		let messageDeleted;
@@ -96,6 +99,8 @@ module.exports = {
 			if (Object.keys(user_status).length) {
 				instruction += ` The user's status/presence is currently:\n${status_devices}`;
 			}
+
+			userQuestion += `\n\n${attachments}`;
 
 			const generationConfig = {
 				maxOutputTokens: 750,

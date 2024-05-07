@@ -1,5 +1,6 @@
 const { HarmCategory, HarmBlockThreshold } = require("@google/generative-ai");
 const { EmbedBuilder, DiscordAPIError } = require("discord.js");
+const axios = require("axios");
 
 function botInGuild(interaction) {
 	const botGuilds = interaction.client.guilds.cache;
@@ -241,7 +242,9 @@ async function fetchThreadMessages(Gemini_API_KEY, message) {
 						: "user";
 				let content = currentMessage.content;
 				if (sender === "user") {
+					const attachments = await processAttachments(currentMessage);
 					content = content.replace(/<@\d+>\s*/, "");
+					content += `\n\n${attachments}`;
 				} else if (
 					sender === "model" &&
 					currentMessage.embeds.length > 0 &&
@@ -275,6 +278,41 @@ async function fetchThreadMessages(Gemini_API_KEY, message) {
 	return { userQuestion, threadMessages, messageDeleted };
 }
 
+async function processAttachments(message) {
+	let attachmentsContent = "";
+
+	if (message.attachments.size > 0) {
+		let hasTextPlainAttachment = false;
+
+		const promises = message.attachments.map(async (attachment) => {
+			if (attachment.contentType === "text/plain; charset=utf-8") {
+				hasTextPlainAttachment = true;
+				const name = attachment.name;
+				const url = attachment.url;
+
+				try {
+					const result = await axios.get(url);
+					const attachmentContent = result.data;
+
+					attachmentsContent += `Name: ${name}\nContent: ${attachmentContent}\n\n`;
+				} catch (error) {
+					console.error(`Failed to retrieve content from ${url}: ${error}`);
+				}
+			}
+		});
+
+		await Promise.all(promises);
+
+		if (hasTextPlainAttachment) {
+			attachmentsContent =
+				"Below are the following files attached to my message:\n\n" +
+				attachmentsContent;
+		}
+	}
+
+	return attachmentsContent;
+}
+
 module.exports = {
 	botInGuild,
 	safetySettings,
@@ -282,4 +320,5 @@ module.exports = {
 	handleResponse,
 	checkGeminiApiKey,
 	fetchThreadMessages,
+	processAttachments,
 };
