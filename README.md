@@ -2,12 +2,44 @@
   <img align="right" width="310" alt="image" src="https://github.com/TecEash1/TecEash1/assets/92249532/bd4aca7e-daab-4eeb-9265-e53cc1925e8c">
 </p>
 
-## 🤔 What is this bot?
+# 🤔 What is the Taurus Discord Bot?
 
-The **Taurus Discord Bot** is a small bot, it can be used for several things such as:
+The Taurus Discord Bot is a small bot with a big impact. It offers several features, including advanced image generation, AI chats, and more. 
 
-- Image Generation
-- AI GPT chats and personality customisations
+<details>
+<summary>💬 AI Chats</summary>
+
+- Powered by Google's [Gemini 1.5 Model](https://deepmind.google/technologies/gemini/#gemini-1.5)
+- Has a configurable global personality via the ``/personalise`` slash command
+- Remembers past messages
+
+**Ways to interact:**
+- Context Menus
+- Mention the Bot with your message
+- Utilise the ``/taurus`` slash command
+
+</details>
+
+<details>
+<summary>🖼️ Advanced Image Generation</summary>
+
+- 70+ Models 
+- 17 Style Presets
+- Negative Prompt Customisation
+- A toggleable NSFW image blocker
+- Supports different languages
+- And much more!
+
+</details>
+
+<details>
+<summary>🔧 Additional Features</summary>
+
+- Live Console Logging in Discord 
+- Personality update logs in Discord
+- User Commands - Use the bot anywhere on Discord
+- An optional CLI via the start scripts
+</details>
 
 ## 💾 Install
 
