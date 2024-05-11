@@ -53,7 +53,7 @@ module.exports = {
 		.addStringOption((option) =>
 			option
 				.setName("style-preset")
-				.setDescription("The Image Style Prese")
+				.setDescription("The Image Style Preset")
 				.addChoices(
 					{ name: "3d Model", value: "3d-model" },
 					{ name: "Analog Film", value: "analog-film" },
