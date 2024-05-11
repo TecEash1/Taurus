@@ -2,7 +2,7 @@
   <img align="right" width="310" alt="image" src="https://github.com/TecEash1/TecEash1/assets/92249532/bd4aca7e-daab-4eeb-9265-e53cc1925e8c">
 </p>
 
-# 🤔 What is the Taurus Discord Bot?
+# 🤔 What is Taurus?
 
 The Taurus Discord Bot is a small bot with a big impact. It offers several features, including advanced image generation, AI chats, and more. 
 
