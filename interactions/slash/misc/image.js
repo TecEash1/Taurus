@@ -38,14 +38,14 @@ module.exports = {
 				.setName("steps")
 				.setDescription("The Number of Steps to Use")
 				.setMinValue(1)
-				.setMaxValue(30),
+				.setMaxValue(50),
 		)
 		.addIntegerOption((option) =>
 			option
 				.setName("cfg-scale")
 				.setDescription("The CFG Scale")
 				.setMinValue(1)
-				.setMaxValue(30),
+				.setMaxValue(20),
 		)
 		.addIntegerOption((option) =>
 			option.setName("seed").setDescription("The Seed").setMinValue(-1),
@@ -108,6 +108,23 @@ module.exports = {
 				{ name: "PLMS", value: "PLMS" },
 				{ name: "UniPC", value: "UniPC" },
 			),
+		)
+		.addBooleanOption((o) =>
+			o.setName("upscale").setDescription("Enable 2x Upscale"),
+		)
+		.addIntegerOption((option) =>
+			option
+				.setName("width")
+				.setDescription("The Width of the Image")
+				.setMinValue(1)
+				.setMaxValue(1024),
+		)
+		.addIntegerOption((option) =>
+			option
+				.setName("height")
+				.setDescription("The Height of the Image")
+				.setMinValue(1)
+				.setMaxValue(1024),
 		),
 
 	async execute(interaction) {
@@ -135,6 +152,9 @@ module.exports = {
 		const cfg_scale = interaction.options.getInteger("cfg-scale");
 		const seed = interaction.options.getInteger("seed");
 		const sampler = interaction.options.getString("sampler");
+		const upscale = interaction.options.getBoolean("upscale");
+		const width = interaction.options.getInteger("width");
+		const height = interaction.options.getInteger("height");
 
 		let prompt = interaction.options.getString("prompt");
 		let negative_prompt = interaction.options.getString("negative-prompt");
@@ -231,6 +251,9 @@ module.exports = {
 			...(sampler && { sampler: sampler }),
 			...(cfg_scale && { cfg_scale: cfg_scale }),
 			...(seed && { seed: seed }),
+			...(upscale && { upscale: upscale }),
+			...(width && { width: width }),
+			...(height && { height: height }),
 		};
 
 		try {
