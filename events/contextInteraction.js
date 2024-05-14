@@ -5,7 +5,7 @@
  * @version 3.3.2
  */
 const { Events } = require("discord.js");
-const { botInGuild } = require("../utils");
+const { botInGuild } = require("../functions/other/utils");
 
 module.exports = {
 	name: Events.InteractionCreate,

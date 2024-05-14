@@ -17,7 +17,7 @@ const {
 	handleResponse,
 	checkGeminiApiKey,
 	fetchThreadMessages,
-} = require("../../../utils");
+} = require("../../../functions/other/utils");
 const { Gemini_API_KEY } = require("../../../config.json");
 const genAI = new GoogleGenerativeAI(Gemini_API_KEY);
 

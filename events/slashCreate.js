@@ -7,7 +7,7 @@
  */
 
 const { Collection, EmbedBuilder, Events } = require("discord.js"),
-	{ botInGuild } = require("../utils"),
+	{ botInGuild } = require("../functions/other/utils"),
 	{ owner } = require("../config.json");
 
 module.exports = {

@@ -17,7 +17,7 @@ const {
 	handleGeminiError,
 	handleResponse,
 	checkGeminiApiKey,
-} = require("../../../utils");
+} = require("../../../functions/other/utils");
 const genAI = new GoogleGenerativeAI(Gemini_API_KEY);
 
 module.exports = {
