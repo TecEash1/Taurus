@@ -36,7 +36,7 @@ async function handleGeminiError(err, loadingMsg) {
 				.setColor("Red");
 
 			return await loadingMsg.edit({ embeds: [safety_error] });
-		case "[GoogleGenerativeAI Error]: Error fetching from https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro-latest:generateContent: [400 Bad Request] User location is not supported for the API use.":
+		case "[GoogleGenerativeAI Error]: Error fetching from https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent: [400 Bad Request] User location is not supported for the API use.":
 			const location_error = new EmbedBuilder()
 				.setTitle("⚠️ An Error Occurred")
 				.setDescription(
@@ -45,7 +45,7 @@ async function handleGeminiError(err, loadingMsg) {
 				.setColor("Red");
 
 			return await loadingMsg.edit({ embeds: [location_error] });
-		case "[GoogleGenerativeAI Error]: Error fetching from https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro-latest:generateContent: [429 Too Many Requests] Resource has been exhausted (e.g. check quota).":
+		case "[GoogleGenerativeAI Error]: Error fetching from https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent: [429 Too Many Requests] Resource has been exhausted (e.g. check quota).":
 			const quota_error = new EmbedBuilder()
 				.setTitle("⚠️ An Error Occurred")
 				.setDescription(
@@ -53,7 +53,7 @@ async function handleGeminiError(err, loadingMsg) {
 				)
 				.setColor("Red");
 
-			for (let i = 10; i > 0; i--) {
+			for (let i = 5; i > 0; i--) {
 				quota_error.setFooter({ text: `⏱️ Retrying request in (${i})` });
 				await loadingMsg.edit({ embeds: [quota_error] });
 				await new Promise((resolve) => setTimeout(resolve, 1000));
@@ -69,7 +69,7 @@ async function handleGeminiError(err, loadingMsg) {
 				.setColor("Red");
 
 			return await loadingMsg.edit({ embeds: [error_empty] });
-		case "[GoogleGenerativeAI Error]: Error fetching from https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro-latest:generateContent: [500 Internal Server Error] An internal error has occurred. Please retry or report in https://developers.generativeai.google/guide/troubleshooting":
+		case "[GoogleGenerativeAI Error]: Error fetching from https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent: [500 Internal Server Error] An internal error has occurred. Please retry or report in https://developers.generativeai.google/guide/troubleshooting":
 			const error_internal = new EmbedBuilder()
 				.setTitle("⚠️ An Error Occurred")
 				.setDescription(
