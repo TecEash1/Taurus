@@ -23,7 +23,7 @@
 		"url": "https://github.com/TecEash1/Taurus/issues"
 	},
 	"dependencies": {
-		"@google/generative-ai": "^0.11.1",
+		"@google/generative-ai": "^0.11.3",
 		"@iamtraction/google-translate": "^2.0.1",
 		"@tensorflow/tfjs-node": "^4.19.0",
 		"api": "^6.1.1",
@@ -31,7 +31,7 @@
 		"better-sqlite3": "^10.0.0",
 		"blessed": "^0.1.81",
 		"chalk": "^5.3.0",
-		"discord-api-types": "^0.37.83",
+		"discord-api-types": "^0.37.84",
 		"discord.js": "^14.15.2",
 		"figlet": "^1.7.0",
 		"moment": "^2.30.1",
