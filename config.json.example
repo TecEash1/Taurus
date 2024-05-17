@@ -1,10 +1,10 @@
 {
-	"token": "...",
-	"owner": ["719815864135712799","483359783831732255"],
-	"client_id": "...",
-	"webhook_url_personality_logs": "...",
-	"webhook_url_console_logs": "...", 
-	"Gemini_API_KEY": "...",
-	"XProdiaKey": "...",
-	"Block_NSFW_Images": true
+    "token": "...",
+    "owner": ["719815864135712799","483359783831732255", "OWNER USER IDS HERE"],
+    "client_id": "...",
+    "emojis": {
+        "loading": "⭕",
+        "working": "🟢",
+        "failed": "🔴"
+    }
 }

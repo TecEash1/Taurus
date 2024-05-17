@@ -8,11 +8,17 @@
  */
 
 const { SlashCommandBuilder, EmbedBuilder } = require("discord.js");
-const { XProdiaKey, Block_NSFW_Images } = require("../../../config.json");
+const { Block_NSFW_Images } = require("../../../config.json");
+const { checkAPIKey } = require("../../../functions/other/utils");
 const translate = require("@iamtraction/google-translate");
 const axios = require("axios");
 const tf = require("@tensorflow/tfjs-node");
 const nsfw = require("nsfwjs");
+const { QuickDB } = require("quick.db");
+const path = require("path");
+const db = new QuickDB({
+	filePath: path.join(__dirname, "../../../functions/other/settings.sqlite"),
+});
 
 module.exports = {
 	data: new SlashCommandBuilder()
@@ -128,13 +134,27 @@ module.exports = {
 		),
 
 	async execute(interaction) {
+		const apiKeys = await db.get("apiKeys");
+		const XProdiaKey = apiKeys.prodia;
+
+		const other = await db.get("other");
+		const blockNSFWImages = other.blockNSFWImages;
+
+		const invalid_api = new EmbedBuilder()
+			.setTitle("⚠️ Invalid API Key")
+			.setDescription(
+				"> *The API Key for Prodia is invalid or not provided*\n> **Please contact the developers**",
+			)
+			.setColor("Red");
+
 		if (!XProdiaKey || XProdiaKey.length < 4) {
-			invalid_api = new EmbedBuilder()
-				.setTitle("⚠️ Invalid API Key")
-				.setDescription(
-					"> *The API Key for Prodia is invalid or not provided*\n> **Please contact the developers**",
-				)
-				.setColor("Red");
+			return interaction.reply({ embeds: [invalid_api] });
+		}
+
+		await interaction.deferReply();
+
+		const isValidKey = await checkAPIKey("prodia", XProdiaKey);
+		if (!isValidKey) {
 			return interaction.reply({ embeds: [invalid_api] });
 		}
 
@@ -144,8 +164,6 @@ module.exports = {
 				"**An Error Occured, please try again later!**\n\n> - API Monthly Credits may have been used up\n> - Might be a problem with the API at the moment\n> - Or the Model/Sampler/Style is not available.",
 			)
 			.setColor("Red");
-
-		await interaction.deferReply();
 
 		const style_preset = interaction.options.getString("style-preset");
 		const steps = interaction.options.getInteger("steps");
@@ -167,7 +185,7 @@ module.exports = {
 			.setDescription(`**⚠️ NSFW content detected!**`)
 			.setColor("Red");
 
-		if (Block_NSFW_Images) {
+		if (blockNSFWImages) {
 			try {
 				const response = await fetch(
 					"https://raw.githubusercontent.com/LDNOOBW/List-of-Dirty-Naughty-Obscene-and-Otherwise-Bad-Words/master/en",
@@ -273,7 +291,7 @@ module.exports = {
 									let image = data.imageUrl;
 
 									(async () => {
-										if (Block_NSFW_Images) {
+										if (blockNSFWImages) {
 											const newImage = await nsfw_getPic(image);
 											image = newImage;
 											if (image === true) {

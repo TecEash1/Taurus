@@ -15,11 +15,12 @@ const {
 	safetySettings,
 	handleGeminiError,
 	handleResponse,
-	checkGeminiApiKey,
 	fetchThreadMessages,
 } = require("../../../functions/other/utils");
-const { Gemini_API_KEY } = require("../../../config.json");
-const genAI = new GoogleGenerativeAI(Gemini_API_KEY);
+const { QuickDB } = require("quick.db");
+const db = new QuickDB({
+	filePath: path.join(__dirname, "../../../functions/other/settings.sqlite"),
+});
 
 module.exports = {
 	data: {
@@ -29,10 +30,13 @@ module.exports = {
 
 	async execute(interaction) {
 		const { channel, targetId } = interaction;
+		const apiKeys = await db.get("apiKeys");
+		const geminiApiKey = apiKeys.gemini;
+		const other = await db.get("other");
+		const modelId = other.model;
+		const genAI = new GoogleGenerativeAI(geminiApiKey);
 
 		const message = await channel.messages.fetch(targetId);
-
-		if (await checkGeminiApiKey(Gemini_API_KEY, interaction, false)) return;
 
 		if (message.author.bot || message.author.id === message.client.user.id) {
 			return interaction.reply({
@@ -50,7 +54,7 @@ module.exports = {
 				userQuestion: fetchedUserQuestion,
 				threadMessages: fetchedThreadMessages,
 				messageDeleted: fetchedMessageDeleted,
-			} = await fetchThreadMessages(Gemini_API_KEY, message);
+			} = await fetchThreadMessages(geminiApiKey, message);
 			if (fetchedUserQuestion === null && fetchedThreadMessages === null)
 				return;
 			threadMessages = fetchedThreadMessages;
@@ -60,7 +64,6 @@ module.exports = {
 			const botMention = `<@${message.client.user.id}>`;
 			const regex = new RegExp(`^${botMention}\\s+.+`);
 
-			if (await checkGeminiApiKey(Gemini_API_KEY, false, message)) return;
 			userQuestion = message.content.replace(botMention, "").trim();
 		}
 
@@ -106,7 +109,6 @@ module.exports = {
 
 			const botMention = `<@${message.client.user.id}>`;
 
-			if (await checkGeminiApiKey(Gemini_API_KEY, false, message)) return;
 			userQuestion = message.content.replace(botMention, "").trim();
 
 			const user_status = message.member?.presence.clientStatus || {};
@@ -126,7 +128,7 @@ module.exports = {
 
 			const model = genAI.getGenerativeModel(
 				{
-					model: "gemini-1.5-flash-latest",
+					model: modelId,
 					systemInstruction: instruction,
 				},
 				{

@@ -67,6 +67,7 @@ for (const file of eventFiles) {
 // Define Collection of Slash/Modal Commands and Cooldowns
 
 client.slashCommands = new Collection();
+client.buttonCommands = new Collection();
 client.modalCommands = new Collection();
 client.contextCommands = new Collection();
 client.cooldowns = new Collection();
@@ -145,6 +146,31 @@ for (const folder of contextMenus) {
 }
 
 /**********************************************************************/
+// Registration of Button-Command Interactions.
+
+/**
+ * @type {String[]}
+ * @description All button commands.
+ */
+
+const buttonCommands = fs.readdirSync("./interactions/buttons");
+
+// Loop through all files and store button-commands in buttonCommands collection.
+
+for (const module of buttonCommands) {
+	const commandFiles = fs
+		.readdirSync(`./interactions/buttons/${module}`)
+		.filter((file) => file.endsWith(".js"));
+
+	for (const commandFile of commandFiles) {
+		const command = require(`./interactions/buttons/${module}/${commandFile}`);
+		for (const id of command.id) {
+			client.buttonCommands.set(id, command);
+		}
+	}
+}
+
+/**********************************************************************/
 // Registration of Modal-Command Interactions.
 
 /**
@@ -163,7 +189,13 @@ for (const module of modalCommands) {
 
 	for (const commandFile of commandFiles) {
 		const command = require(`./interactions/modals/${module}/${commandFile}`);
-		client.modalCommands.set(command.id, command);
+		if (Array.isArray(command.id)) {
+			for (const id of command.id) {
+				client.modalCommands.set(id, command);
+			}
+		} else {
+			client.modalCommands.set(command.id, command);
+		}
 	}
 }
 

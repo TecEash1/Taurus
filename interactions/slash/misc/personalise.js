@@ -20,13 +20,11 @@ const {
 const axios = require("axios");
 const fs = require("fs").promises;
 const path = require("path");
-const { webhook_url_personality_logs, owner } = require("../../../config.json");
-
-const no_access = new EmbedBuilder()
-	.setDescription(
-		"**⚠️ Only my developers can update/view my global personality prompt!**\n\n> *If you want to suggest a change, please let us know!*",
-	)
-	.setColor("Red");
+const { checkOwnerAndReply } = require("../../../functions/other/utils");
+const { QuickDB } = require("quick.db");
+const db = new QuickDB({
+	filePath: path.join(__dirname, "../../../functions/other/settings.sqlite"),
+});
 
 const link_error = new EmbedBuilder()
 	.setDescription("**The file link is not a valid URL!**")
@@ -75,14 +73,16 @@ module.exports = {
 		),
 
 	async execute(interaction) {
+		const webhooks = await db.get("webhooks");
+		const personalityWebhook = webhooks.personality;
+
 		const file = interaction.options.getAttachment("file");
 		const file_link = interaction.options.getString("file-link");
 		const other = interaction.options.getString("other");
 
-		if (!owner.includes(interaction.user.id)) {
-			return await interaction.reply({ embeds: [no_access], ephemeral: true });
+		if (!checkOwnerAndReply(interaction)) {
+			return;
 		}
-
 		const selectedOptions = [file, file_link, other].filter(
 			(option) => option != null,
 		).length;
@@ -313,7 +313,7 @@ module.exports = {
 
 				try {
 					const webhookClient = new WebhookClient({
-						url: webhook_url_personality_logs,
+						url: personalityWebhook,
 					});
 
 					update = new EmbedBuilder()

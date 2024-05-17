@@ -10,21 +10,26 @@ const fs = require("fs").promises;
 const path = require("path");
 const { EmbedBuilder } = require("discord.js");
 const { GoogleGenerativeAI } = require("@google/generative-ai");
-const { Gemini_API_KEY } = require("../../../config.json");
 const {
 	botInGuild,
 	safetySettings,
 	handleGeminiError,
 	handleResponse,
-	checkGeminiApiKey,
 } = require("../../../functions/other/utils");
-const genAI = new GoogleGenerativeAI(Gemini_API_KEY);
+const { QuickDB } = require("quick.db");
+const db = new QuickDB({
+	filePath: path.join(__dirname, "../../../functions/other/settings.sqlite"),
+});
 
 module.exports = {
 	id: "taurus_ai",
 
 	async execute(interaction) {
-		if (await checkGeminiApiKey(Gemini_API_KEY, interaction, false)) return;
+		const apiKeys = await db.get("apiKeys");
+		const geminiApiKey = apiKeys.gemini;
+		const other = await db.get("other");
+		const modelId = other.model;
+		const genAI = new GoogleGenerativeAI(geminiApiKey);
 
 		const personalityFilePath = path.join(
 			__dirname + "../../../../personality.txt",
@@ -88,7 +93,7 @@ module.exports = {
 
 			const model = genAI.getGenerativeModel(
 				{
-					model: "gemini-1.5-flash-latest",
+					model: modelId,
 					systemInstruction: instruction,
 				},
 				{

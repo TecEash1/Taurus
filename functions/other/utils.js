@@ -1,5 +1,7 @@
 const { HarmCategory, HarmBlockThreshold } = require("@google/generative-ai");
-const { EmbedBuilder, DiscordAPIError } = require("discord.js");
+const { EmbedBuilder, DiscordAPIError, WebhookClient } = require("discord.js");
+const { owner } = require("../../config.json");
+const axios = require("axios");
 
 function botInGuild(interaction) {
 	const botGuilds = interaction.client.guilds.cache;
@@ -36,7 +38,19 @@ async function handleGeminiError(err, loadingMsg) {
 				.setColor("Red");
 
 			return await loadingMsg.edit({ embeds: [safety_error] });
-		case "[GoogleGenerativeAI Error]: Error fetching from https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent: [400 Bad Request] User location is not supported for the API use.":
+		case "Cannot send an empty message":
+			const error_empty = new EmbedBuilder()
+				.setTitle("⚠️ An Error Occurred")
+				.setDescription(
+					"An error occurred while processing your request. Please try again later, or in a few minutes. \n▸ *If this issue persists, please contact the Developers.* \n> - Generated response may be too long. *(Fix this by specifying for the generated response to be smaller, e.g. 10 Lines)*\n> - Token Limit for this minute may have been reached.",
+				)
+				.setColor("Red");
+
+			return await loadingMsg.edit({ embeds: [error_empty] });
+	}
+
+	switch (err.status) {
+		case 400:
 			const location_error = new EmbedBuilder()
 				.setTitle("⚠️ An Error Occurred")
 				.setDescription(
@@ -45,7 +59,7 @@ async function handleGeminiError(err, loadingMsg) {
 				.setColor("Red");
 
 			return await loadingMsg.edit({ embeds: [location_error] });
-		case "[GoogleGenerativeAI Error]: Error fetching from https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent: [429 Too Many Requests] Resource has been exhausted (e.g. check quota).":
+		case 429:
 			const quota_error = new EmbedBuilder()
 				.setTitle("⚠️ An Error Occurred")
 				.setDescription(
@@ -58,18 +72,8 @@ async function handleGeminiError(err, loadingMsg) {
 				await loadingMsg.edit({ embeds: [quota_error] });
 				await new Promise((resolve) => setTimeout(resolve, 1000));
 			}
-
 			return "quota_error";
-		case "Cannot send an empty message":
-			const error_empty = new EmbedBuilder()
-				.setTitle("⚠️ An Error Occurred")
-				.setDescription(
-					"An error occurred while processing your request. Please try again later, or in a few minutes. \n▸ *If this issue persists, please contact the Developers.* \n> - Generated response may be too long. *(Fix this by specifying for the generated response to be smaller, e.g. 10 Lines)*\n> - Token Limit for this minute may have been reached.",
-				)
-				.setColor("Red");
-
-			return await loadingMsg.edit({ embeds: [error_empty] });
-		case "[GoogleGenerativeAI Error]: Error fetching from https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent: [500 Internal Server Error] An internal error has occurred. Please retry or report in https://developers.generativeai.google/guide/troubleshooting":
+		case 500:
 			const error_internal = new EmbedBuilder()
 				.setTitle("⚠️ An Error Occurred")
 				.setDescription(
@@ -78,6 +82,14 @@ async function handleGeminiError(err, loadingMsg) {
 				.setColor("Red");
 
 			return await loadingMsg.edit({ embeds: [error_internal] });
+		case 403:
+			const invalid_api = new EmbedBuilder()
+				.setTitle("⚠️ Invalid API Key")
+				.setDescription(
+					"> **The API Key for Gemini is invalid or not provided.**",
+				)
+				.setColor("Red");
+			return await loadingMsg.edit({ embeds: [invalid_api] });
 		default:
 			console.error(err.message);
 			const error_unknown = new EmbedBuilder()
@@ -169,27 +181,11 @@ async function handleResponse(
 	return await loadingMsg.edit({ content: responseText, embeds: info_embed });
 }
 
-async function checkGeminiApiKey(Gemini_API_KEY, interaction, message) {
-	if (!Gemini_API_KEY || Gemini_API_KEY.length < 4) {
-		const invalid_api = new EmbedBuilder()
-			.setTitle("⚠️ Invalid API Key")
-			.setDescription(
-				"> **The API Key for Gemini is invalid or not provided.**",
-			)
-			.setColor("Red");
-
-		return interaction
-			? interaction.reply({ embeds: [invalid_api] })
-			: message.reply({ embeds: [invalid_api] });
-	}
-}
-
 async function fetchThreadMessages(Gemini_API_KEY, message) {
 	let threadMessages = [];
 	let messageDeleted;
 	userQuestion = message.content;
 
-	if (await checkGeminiApiKey(Gemini_API_KEY, false, message)) return;
 	try {
 		const originalMessage = await message.channel.messages.fetch(
 			message.reference.messageId,
@@ -275,11 +271,61 @@ async function fetchThreadMessages(Gemini_API_KEY, message) {
 	return { userQuestion, threadMessages, messageDeleted };
 }
 
+async function checkWebhook(webhookURL) {
+	try {
+		const webhookClient = new WebhookClient({ url: webhookURL });
+		return true;
+	} catch (error) {
+		return false;
+	}
+}
+
+const checkAPIKey = async (type, apiKey) => {
+	let url, headers;
+
+	switch (type.toLowerCase()) {
+		case "prodia":
+			url = "https://api.prodia.com/v1/sd/loras";
+			headers = { "X-Prodia-Key": apiKey, accept: "application/json" };
+			break;
+		case "gemini":
+			url = `https://generativelanguage.googleapis.com/v1beta/models?key=${apiKey}`;
+			headers = {};
+			break;
+		default:
+			throw new Error(`Invalid API type: ${type}`);
+	}
+
+	try {
+		const response = await axios.get(url, { headers });
+		return response.status === 200;
+	} catch (error) {
+		return false;
+	}
+};
+
+function checkOwnerAndReply(interaction) {
+	const no_access = new EmbedBuilder()
+		.setDescription("**⚠️ This is limited to Developers Only!**")
+		.setColor("Red");
+
+	if (!owner.includes(interaction.user.id)) {
+		interaction.reply({
+			embeds: [no_access],
+			ephemeral: true,
+		});
+		return false;
+	}
+	return true;
+}
+
 module.exports = {
 	botInGuild,
 	safetySettings,
 	handleGeminiError,
 	handleResponse,
-	checkGeminiApiKey,
 	fetchThreadMessages,
+	checkWebhook,
+	checkAPIKey,
+	checkOwnerAndReply,
 };

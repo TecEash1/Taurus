@@ -8,14 +8,21 @@
  */
 
 const { SlashCommandBuilder, EmbedBuilder } = require("discord.js");
-const { XProdiaKey } = require("../../../config.json");
+const { QuickDB } = require("quick.db");
+const path = require("path");
+const db = new QuickDB({
+	filePath: path.join(__dirname, "../../../functions/other/settings.sqlite"),
+});
 
 module.exports = {
 	data: new SlashCommandBuilder()
 		.setName("models")
 		.setDescription("List the available models for image generation!"),
 
-	async execute(interaction, client) {
+	async execute(interaction) {
+		const apiKeys = await db.get("apiKeys");
+		const XProdiaKey = apiKeys.prodia;
+
 		if (!XProdiaKey || XProdiaKey.length < 4) {
 			invalid_api = new EmbedBuilder()
 				.setTitle("⚠️ Invalid API Key")
