@@ -39,6 +39,7 @@ The Taurus Discord Bot is a small bot with a big impact. It offers several featu
 - Personality update logs in Discord
 - User Commands - Use the bot anywhere on Discord
 - An optional CLI via the start scripts
+- A Settings Menu in Discord
 </details>
 
 ## 💾 Install
@@ -49,7 +50,9 @@ The Taurus Discord Bot is a small bot with a big impact. It offers several featu
 
 3. Run `pnpm i`
 
-4. Run `node bot`
+4. Run `node .`
+
+5. In Discord run ``/settings`` and fill in the values
 
 > [!NOTE]
 > - Alternatively **instead of steps 3 & 4** you can **run one of the startbot/start scripts.** *(Reccomended)*
