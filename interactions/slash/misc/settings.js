@@ -59,7 +59,7 @@ module.exports = {
 					},
 					{
 						name: "⚙️ Other:",
-						value: `${emojis.loading} **NSFW Image Blocking**\n${emojis.loading} **Model**`,
+						value: `${emojis.loading} **NSFW Image Blocking**\n${emojis.loading} **Load Balancing**\n${emojis.loading} **Model**`,
 						inline: true,
 					},
 				)
@@ -116,7 +116,15 @@ module.exports = {
 				interaction,
 				settings,
 				"⚙️ Other:",
-				`${isNSFWBlockingEnabled ? emojis.working : emojis.failed} **NSFW Image Blocking**\n${emojis.loading} **Model**`,
+				`${isNSFWBlockingEnabled ? emojis.working : emojis.failed} **NSFW Image Blocking**\n${emojis.loading} **Load Balancing**\n${emojis.loading} **Model**`,
+			);
+
+			let isLoadBalancingEnabled = otherSettings.loadBalancing;
+			await updateFieldValueAndReply(
+				interaction,
+				settings,
+				"⚙️ Other:",
+				`${isNSFWBlockingEnabled ? emojis.working : emojis.failed} **NSFW Image Blocking**\n${isLoadBalancingEnabled ? emojis.working : emojis.failed} **Load Balancing**\n${emojis.loading} **Model**`,
 			);
 
 			let modelName = otherSettings.model;
@@ -131,7 +139,7 @@ module.exports = {
 				interaction,
 				settings,
 				"⚙️ Other:",
-				`${isNSFWBlockingEnabled ? emojis.working : emojis.failed} **NSFW Image Blocking**\n${modelEmoji} **${modelNameFormatted}**`,
+				`${isNSFWBlockingEnabled ? emojis.working : emojis.failed} **NSFW Image Blocking**\n${isLoadBalancingEnabled ? emojis.working : emojis.failed} **Load Balancing**\n${modelEmoji} **${modelNameFormatted}**`,
 			);
 
 			// BUTTONS
@@ -167,12 +175,21 @@ module.exports = {
 				.setLabel("NSFW Image Blocking")
 				.setEmoji("🔞")
 				.setStyle(ButtonStyle.Secondary);
+			const loadBalance = new ButtonBuilder()
+				.setCustomId("loadBalancing")
+				.setLabel("Load Balancing")
+				.setEmoji("⚖️")
+				.setStyle(ButtonStyle.Secondary);
 			const model = new ButtonBuilder()
 				.setCustomId("model")
 				.setLabel("Model")
 				.setEmoji("🔁")
 				.setStyle(ButtonStyle.Secondary);
-			const otherRow = new ActionRowBuilder().addComponents(nsfw, model);
+			const otherRow = new ActionRowBuilder().addComponents(
+				nsfw,
+				loadBalance,
+				model,
+			);
 
 			await interaction.editReply({
 				components: [webhooksRow, apiKeysRow, otherRow],

@@ -1,6 +1,11 @@
 const { HarmCategory, HarmBlockThreshold } = require("@google/generative-ai");
 const { EmbedBuilder, DiscordAPIError, WebhookClient } = require("discord.js");
 const { owner } = require("../../config.json");
+const path = require("path");
+const { QuickDB } = require("quick.db");
+const db = new QuickDB({
+	filePath: path.join(__dirname, "./settings.sqlite"),
+});
 const axios = require("axios");
 
 function botInGuild(interaction) {
@@ -67,12 +72,18 @@ async function handleGeminiError(err, loadingMsg) {
 				)
 				.setColor("Red");
 
-			for (let i = 5; i > 0; i--) {
-				quota_error.setFooter({ text: `⏱️ Retrying request in (${i})` });
-				await loadingMsg.edit({ embeds: [quota_error] });
-				await new Promise((resolve) => setTimeout(resolve, 1000));
+			const other = await db.get("other");
+			const loadBalance = other.loadBalancing;
+			if (loadBalance) {
+				return "quotaErrorBalance";
+			} else {
+				for (let i = 5; i > 0; i--) {
+					quota_error.setFooter({ text: `⏱️ Retrying request in (${i})` });
+					await loadingMsg.edit({ embeds: [quota_error] });
+					await new Promise((resolve) => setTimeout(resolve, 1000));
+				}
+				return "quota_error";
 			}
-			return "quota_error";
 		case 500:
 			const error_internal = new EmbedBuilder()
 				.setTitle("⚠️ An Error Occurred")

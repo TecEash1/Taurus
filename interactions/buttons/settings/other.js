@@ -16,7 +16,7 @@ const db = new QuickDB({
 const { checkOwnerAndReply } = require("../../../functions/other/utils");
 
 module.exports = {
-	id: ["blockNSFWImages", "model"],
+	id: ["blockNSFWImages", "loadBalancing", "model"],
 
 	async execute(interaction) {
 		if (!checkOwnerAndReply(interaction)) {
@@ -29,6 +29,10 @@ module.exports = {
 			case "blockNSFWImages":
 				otherSettings.blockNSFWImages = !otherSettings.blockNSFWImages;
 				updatedSetting = `**🔞 NSFW Image Blocking ${otherSettings.blockNSFWImages ? "Enabled" : "Disabled"}**`;
+				break;
+			case "loadBalancing":
+				otherSettings.loadBalancing = !otherSettings.loadBalancing;
+				updatedSetting = `**⚖️ Load Balancing ${otherSettings.loadBalancing ? "Enabled" : "Disabled"}**`;
 				break;
 			case "model":
 				otherSettings.model =
@@ -49,7 +53,7 @@ module.exports = {
 		const otherFieldIndex = embedData.data.fields.find(
 			(field) => field.name === "⚙️ Other:",
 		);
-		otherFieldIndex.value = `${otherSettings.blockNSFWImages ? emojis.working : emojis.failed} **NSFW Image Blocking**\n${otherSettings.model === "gemini-1.5-flash-latest" ? "⚡" : "💪"} **${otherSettings.model
+		otherFieldIndex.value = `${otherSettings.blockNSFWImages ? emojis.working : emojis.failed} **NSFW Image Blocking**\n${otherSettings.loadBalancing ? emojis.working : emojis.failed} **Load Balancing**\n${otherSettings.model === "gemini-1.5-flash-latest" ? "⚡" : "💪"} **${otherSettings.model
 			.replace(/-latest$/, "")
 			.replace(/-/g, " ")
 			.split(" ")

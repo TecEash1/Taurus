@@ -33,7 +33,7 @@ module.exports = {
 		const apiKeys = await db.get("apiKeys");
 		const geminiApiKey = apiKeys.gemini;
 		const other = await db.get("other");
-		const modelId = other.model;
+		let modelId = other.model;
 		const genAI = new GoogleGenerativeAI(geminiApiKey);
 
 		const message = await channel.messages.fetch(targetId);
@@ -176,7 +176,14 @@ module.exports = {
 				sendTypingInterval && clearInterval(sendTypingInterval);
 
 				errorType = await handleGeminiError(err, loadingMsg);
+
+				if (errorType === "quotaErrorBalance") {
+					modelId =
+						modelId === "gemini-1.5-pro-latest"
+							? "gemini-1.5-flash-latest"
+							: "gemini-1.5-pro-latest";
+				}
 			}
-		} while (errorType === "quota_error");
+		} while (errorType === "quota_error" || errorType === "quotaErrorBalance");
 	},
 };
