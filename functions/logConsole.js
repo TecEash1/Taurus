@@ -1,6 +1,9 @@
 module.exports = (client) => {
 	const { WebhookClient, EmbedBuilder } = require("discord.js");
 	const { QuickDB } = require("quick.db");
+	const {
+		webhookUpdateEvent,
+	} = require("../interactions/modals/Settings/webhooks");
 	const path = require("path");
 	const db = new QuickDB({
 		filePath: path.join(__dirname, "./other/settings.sqlite"),
@@ -11,15 +14,25 @@ module.exports = (client) => {
 		webhookURL = webhookUrlConsoleLogs;
 
 		let webhookClient;
-		try {
-			webhookClient = new WebhookClient({ url: webhookURL });
-		} catch (error) {
-			console.log(
-				"\x1b[31m\x1b[1m%s\x1b[0m",
-				"CONSOLE LOGGING IN DISCORD DISABLED. SET WEBHOOK URL WITH /SETTINGS.",
-			);
-			return;
-		}
+		const setupWebhookClient = async () => {
+			const webhooks = await db.get("webhooks");
+			webhookURL = webhooks.console;
+
+			try {
+				webhookClient = new WebhookClient({ url: webhookURL });
+			} catch (error) {
+				console.log(
+					"\x1b[31m\x1b[1m%s\x1b[0m",
+					"CONSOLE LOGGING IN DISCORD DISABLED. SET WEBHOOK URL WITH /SETTINGS.",
+				);
+			}
+		};
+		setupWebhookClient();
+
+		webhookUpdateEvent.on("update", (newWebhookUrl) => {
+			webhookURL = newWebhookUrl;
+			setupWebhookClient();
+		});
 
 		function customLogger(type, ...messages) {
 			const combinedMessage = messages

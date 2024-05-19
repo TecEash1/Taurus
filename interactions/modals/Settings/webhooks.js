@@ -8,6 +8,8 @@
  */
 const fs = require("fs").promises;
 const path = require("path");
+const { EventEmitter } = require("events");
+const webhookUpdateEvent = new EventEmitter();
 const { EmbedBuilder, WebhookClient } = require("discord.js");
 const { checkWebhook } = require("../../../functions/other/utils");
 const { emojis } = require("../../../config.json");
@@ -18,6 +20,7 @@ const db = new QuickDB({
 
 module.exports = {
 	id: ["personality", "console"],
+	webhookUpdateEvent,
 
 	async execute(interaction) {
 		const webhookName =
@@ -99,6 +102,7 @@ module.exports = {
 				webhooks.console = webhook;
 				embedData.data.fields[webhookFieldIndex].value =
 					`${personalityWebhookStatus}\n${isValidWebhook ? emojis.working : emojis.failed} **Console**`;
+				webhookUpdateEvent.emit("update", webhooks.console);
 		}
 
 		await db.set("webhooks", webhooks);

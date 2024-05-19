@@ -3,6 +3,8 @@
 .vscode/
 .idea/
 .node-version
+/functions/other/settings.sqlite
+/personality.txt
 
 # Logs
 logs
