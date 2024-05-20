@@ -87,6 +87,7 @@ module.exports = {
 		try {
 			await command.execute(interaction);
 		} catch (err) {
+			console.error(err);
 			await interaction.reply({
 				embeds: [error],
 				ephemeral: true,

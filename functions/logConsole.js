@@ -12,26 +12,26 @@ module.exports = (client) => {
 		const webhooks = await db.get("webhooks");
 		webhookUrlConsoleLogs = webhooks.console;
 		webhookURL = webhookUrlConsoleLogs;
+		let isWebhookSetupSuccessful = false;
 
 		let webhookClient;
 		const setupWebhookClient = async () => {
-			const webhooks = await db.get("webhooks");
-			webhookURL = webhooks.console;
-
 			try {
 				webhookClient = new WebhookClient({ url: webhookURL });
+				isWebhookSetupSuccessful = true;
 			} catch (error) {
 				console.log(
 					"\x1b[31m\x1b[1m%s\x1b[0m",
 					"CONSOLE LOGGING IN DISCORD DISABLED. SET WEBHOOK URL WITH /SETTINGS.",
 				);
+				isWebhookSetupSuccessful = false;
 			}
 		};
-		setupWebhookClient();
+		await setupWebhookClient();
 
-		webhookUpdateEvent.on("update", (newWebhookUrl) => {
+		webhookUpdateEvent.on("update", async (newWebhookUrl) => {
 			webhookURL = newWebhookUrl;
-			setupWebhookClient();
+			await setupWebhookClient();
 		});
 
 		function customLogger(type, ...messages) {
@@ -70,13 +70,15 @@ module.exports = (client) => {
 				}
 			}
 
-			webhookClient
-				.send({
-					username: "Taurus Console",
-					avatarURL: client.user.displayAvatarURL(),
-					embeds: [embed],
-				})
-				.catch(console.error);
+			if (isWebhookSetupSuccessful) {
+				webhookClient
+					.send({
+						username: "Taurus Console",
+						avatarURL: client.user.displayAvatarURL(),
+						embeds: [embed],
+					})
+					.catch(console.error);
+			}
 
 			console.originalLog(combinedMessage);
 		}
