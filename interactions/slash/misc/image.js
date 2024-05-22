@@ -8,17 +8,83 @@
  */
 
 const { SlashCommandBuilder, EmbedBuilder } = require("discord.js");
-const { Block_NSFW_Images } = require("../../../config.json");
 const { checkAPIKey } = require("../../../functions/other/utils");
 const translate = require("@iamtraction/google-translate");
-const axios = require("axios");
-const tf = require("@tensorflow/tfjs-node");
-const nsfw = require("nsfwjs");
 const { QuickDB } = require("quick.db");
 const path = require("path");
 const db = new QuickDB({
 	filePath: path.join(__dirname, "../../../functions/other/settings.sqlite"),
 });
+const axios = require("axios");
+const tf = require("@tensorflow/tfjs-node");
+const nsfw = require("nsfwjs");
+
+let nsfwModelPromise = null;
+
+async function loadNsfwModel() {
+	if (!nsfwModelPromise) {
+		nsfwModelPromise = nsfw.load();
+	}
+	return nsfwModelPromise;
+}
+
+function resizeImage(imageTensor) {
+	const [height, width] = imageTensor.shape.slice(0, 2);
+	const aspectRatio = width / height;
+
+	let newWidth, newHeight;
+
+	if (aspectRatio > 1) {
+		newHeight = 224;
+		newWidth = Math.round(aspectRatio * 224);
+	} else {
+		newWidth = 224;
+		newHeight = Math.round(224 / aspectRatio);
+	}
+
+	const resizedImage = tf.image.resizeBilinear(imageTensor, [
+		newHeight,
+		newWidth,
+	]);
+	return resizedImage;
+}
+
+async function nsfwGetPic(image, nsfw_embed, interaction) {
+	const model = await loadNsfwModel();
+	const pic = await axios.get(image, { responseType: "arraybuffer" });
+	const imageTensor = tf.node.decodeImage(pic.data, 3);
+
+	const resizedImage = resizeImage(imageTensor);
+	imageTensor.dispose();
+
+	const predictions = await model.classify(resizedImage);
+	resizedImage.dispose();
+
+	if (
+		(predictions[0].probability > 0.5 && predictions[0].className === "Porn") ||
+		predictions[0].className === "Hentai" ||
+		predictions[0].className === "Sexy"
+	) {
+		await interaction.followUp({ embeds: [nsfw_embed] });
+		return true;
+	}
+	return image;
+}
+
+let nsfwWordsCache = null;
+
+async function getNsfwWords() {
+	if (!nsfwWordsCache) {
+		const response = await fetch(
+			"https://raw.githubusercontent.com/LDNOOBW/List-of-Dirty-Naughty-Obscene-and-Otherwise-Bad-Words/master/en",
+		);
+		const data = await response.text();
+		nsfwWordsCache = data
+			.split("\n")
+			.filter((word) => word !== "suck" && word !== "sucks");
+	}
+	return nsfwWordsCache;
+}
 
 module.exports = {
 	data: new SlashCommandBuilder()
@@ -187,17 +253,8 @@ module.exports = {
 
 		if (blockNSFWImages) {
 			try {
-				const response = await fetch(
-					"https://raw.githubusercontent.com/LDNOOBW/List-of-Dirty-Naughty-Obscene-and-Otherwise-Bad-Words/master/en",
-				);
-				const data = await response.text();
-				let nsfw_words = data.split("\n");
-				nsfw_words = nsfw_words.filter(
-					(word) => word !== "suck" && word !== "sucks",
-				);
-
+				const nsfw_words = await getNsfwWords();
 				let promptWords = prompt.split(" ");
-
 				for (let word of nsfw_words) {
 					if (promptWords.includes(word)) {
 						await interaction.followUp({ embeds: [nsfw_embed] });
@@ -209,25 +266,6 @@ module.exports = {
 			}
 		}
 
-		async function nsfw_getPic(image) {
-			const pic = await axios.get(image, { responseType: "arraybuffer" });
-			const model = await nsfw.load();
-			image_analyse = await tf.node.decodeImage(pic.data, 3);
-			const predictions = await model.classify(image_analyse);
-			image_analyse.dispose();
-
-			if (
-				(predictions[0].probability > 0.5 &&
-					predictions[0].className === "Porn") ||
-				predictions[0].className === "Hentai" ||
-				predictions[0].className === "Sexy"
-			) {
-				await interaction.followUp({ embeds: [nsfw_embed] });
-				return true;
-			}
-			return image;
-		}
-
 		const sdk = require("api")("@prodia/v1.3.0#6fdmny2flsvwyf65");
 
 		sdk.auth(XProdiaKey);
@@ -237,12 +275,15 @@ module.exports = {
 				const { data } = await apiMethod();
 				return JSON.parse(data);
 			} catch (e) {
+				console.error(e);
 				return interaction.followUp({ embeds: [error] });
 			}
 		}
 
-		const choices = await fetchModels(sdk.listModels);
-		const sdxlChoices = await fetchModels(sdk.listSdxlModels);
+		const [choices, sdxlChoices] = await Promise.all([
+			fetchModels(sdk.listModels),
+			fetchModels(sdk.listSdxlModels),
+		]);
 
 		const allModels = [...choices, ...sdxlChoices];
 
@@ -292,7 +333,11 @@ module.exports = {
 
 									(async () => {
 										if (blockNSFWImages) {
-											const newImage = await nsfw_getPic(image);
+											const newImage = await nsfwGetPic(
+												image,
+												nsfw_embed,
+												interaction,
+											);
 											image = newImage;
 											if (image === true) {
 												return;
@@ -317,7 +362,7 @@ module.exports = {
 								}
 							})
 							.catch((err) => console.error(err));
-					}, 2000);
+					}, 5000);
 				})
 				.catch((err) => console.error(err));
 		} catch (err) {

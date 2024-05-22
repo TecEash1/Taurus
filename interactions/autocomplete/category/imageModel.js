@@ -7,12 +7,18 @@
  * @type {import("../../../typings").AutocompleteInteraction}
  */
 
-const { XProdiaKey } = require("../../../config.json");
-
+const { QuickDB } = require("quick.db");
+const path = require("path");
+const db = new QuickDB({
+	filePath: path.join(__dirname, "../../../functions/other/settings.sqlite"),
+});
 module.exports = {
 	name: "image",
 	async execute(interaction) {
 		const focusedOption = interaction.options.getFocused();
+
+		const apiKeys = await db.get("apiKeys");
+		const XProdiaKey = apiKeys.prodia;
 
 		const sdk = require("api")("@prodia/v1.3.0#6fdmny2flsvwyf65");
 		sdk.auth(XProdiaKey);
@@ -27,10 +33,12 @@ module.exports = {
 			}
 		}
 
-		const sdModels = await fetchAndFormatModels(sdk.listModels);
-		const sdxlModels = await fetchAndFormatModels(sdk.listSdxlModels);
+		const [sdModels, sdxlModels] = await Promise.all([
+			fetchAndFormatModels(sdk.listModels),
+			fetchAndFormatModels(sdk.listSdxlModels),
+		]);
 
-		const allModels = sdModels.concat(sdxlModels);
+		const allModels = [...sdModels, ...sdxlModels];
 		const filteredModels = allModels.filter((model) =>
 			model.toLowerCase().startsWith(focusedOption.toLowerCase()),
 		);

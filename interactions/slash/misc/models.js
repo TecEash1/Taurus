@@ -56,8 +56,10 @@ module.exports = {
 			}
 		}
 
-		const choices_string = await fetchAndFormatModels(sdk.listModels);
-		const sdxlChoices_string = await fetchAndFormatModels(sdk.listSdxlModels);
+		const [choices_string, sdxlChoices_string] = await Promise.all([
+			fetchAndFormatModels(sdk.listModels),
+			fetchAndFormatModels(sdk.listSdxlModels),
+		]);
 
 		const models = new EmbedBuilder()
 			.setTitle("🖼️ Available Models")
