@@ -13,24 +13,35 @@ function botInGuild(interaction) {
 	return botGuilds.has(interaction.guildId);
 }
 
-const safetySettings = [
-	{
-		category: HarmCategory.HARM_CATEGORY_HARASSMENT,
-		threshold: HarmBlockThreshold.BLOCK_ONLY_HIGH,
-	},
-	{
-		category: HarmCategory.HARM_CATEGORY_HATE_SPEECH,
-		threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE,
-	},
-	{
-		category: HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT,
-		threshold: HarmBlockThreshold.BLOCK_LOW_AND_ABOVE,
-	},
-	{
-		category: HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT,
-		threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE,
-	},
-];
+async function getSafetySettings() {
+	const model = await db.get("model");
+	const safetyEnabled = model.safetySystem;
+
+	const safetySettings = [
+		{
+			category: HarmCategory.HARM_CATEGORY_HARASSMENT,
+			threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE,
+		},
+		{
+			category: HarmCategory.HARM_CATEGORY_HATE_SPEECH,
+			threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE,
+		},
+		{
+			category: HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT,
+			threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE,
+		},
+		{
+			category: HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT,
+			threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE,
+		},
+	].map((setting) => {
+		if (!safetyEnabled) {
+			setting.threshold = HarmBlockThreshold.BLOCK_NONE;
+		}
+		return setting;
+	});
+	return safetySettings;
+}
 
 async function handleGeminiError(err, loadingMsg) {
 	switch (err.message) {
@@ -332,7 +343,7 @@ function checkOwnerAndReply(interaction) {
 
 module.exports = {
 	botInGuild,
-	safetySettings,
+	getSafetySettings,
 	handleGeminiError,
 	handleResponse,
 	fetchThreadMessages,

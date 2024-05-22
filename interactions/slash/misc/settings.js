@@ -58,8 +58,13 @@ module.exports = {
 						inline: true,
 					},
 					{
+						name: "🧠 Model:",
+						value: `${emojis.loading} **Fallback System**\n${emojis.loading} **Safety System**\n${emojis.loading} **Model**`,
+						inline: true,
+					},
+					{
 						name: "⚙️ Other:",
-						value: `${emojis.loading} **NSFW Image Blocking**\n${emojis.loading} **Load Balancing**\n${emojis.loading} **Model**`,
+						value: `${emojis.loading} **NSFW Image Blocking**`,
 						inline: true,
 					},
 				)
@@ -74,6 +79,7 @@ module.exports = {
 
 			const webhooks = await db.get("webhooks");
 			const apiKeys = await db.get("apiKeys");
+			const modelSettings = await db.get("model");
 			const otherSettings = await db.get("other");
 
 			// WEBHOOK CHECKING
@@ -110,24 +116,25 @@ module.exports = {
 				`${isProdiaKeyValid ? emojis.working : emojis.failed} **Prodia**\n${isGeminiKeyValid ? emojis.working : emojis.failed} **Gemini**`,
 			);
 
-			// OTHER SETTINGS CHECKING
-			let isNSFWBlockingEnabled = otherSettings.blockNSFWImages;
+			// MODEL SETTINGS CHECKING
+
+			let isFallbackSystemEnabled = modelSettings.fallbackSystem;
 			await updateFieldValueAndReply(
 				interaction,
 				settings,
-				"⚙️ Other:",
-				`${isNSFWBlockingEnabled ? emojis.working : emojis.failed} **NSFW Image Blocking**\n${emojis.loading} **Load Balancing**\n${emojis.loading} **Model**`,
+				"🧠 Model:",
+				`${isFallbackSystemEnabled ? emojis.working : emojis.failed} **Fallback System**\n${emojis.loading} **Safety System**\n${emojis.loading} **Model**`,
 			);
 
-			let isLoadBalancingEnabled = otherSettings.loadBalancing;
+			let isSafetySystemEnabled = modelSettings.safetySystem;
 			await updateFieldValueAndReply(
 				interaction,
 				settings,
-				"⚙️ Other:",
-				`${isNSFWBlockingEnabled ? emojis.working : emojis.failed} **NSFW Image Blocking**\n${isLoadBalancingEnabled ? emojis.working : emojis.failed} **Load Balancing**\n${emojis.loading} **Model**`,
+				"🧠 Model:",
+				`${isFallbackSystemEnabled ? emojis.working : emojis.failed} **Fallback System**\n${isSafetySystemEnabled ? emojis.working : emojis.failed} **Safety System**\n${emojis.loading} **Model**`,
 			);
 
-			let modelName = otherSettings.model;
+			let modelName = modelSettings.model;
 			let modelEmoji = modelName === "gemini-1.5-flash-latest" ? "⚡" : "💪";
 			let modelNameFormatted = modelName
 				.replace(/-latest$/, "")
@@ -138,8 +145,17 @@ module.exports = {
 			await updateFieldValueAndReply(
 				interaction,
 				settings,
+				"🧠 Model:",
+				`${isFallbackSystemEnabled ? emojis.working : emojis.failed} **Fallback System**\n${isSafetySystemEnabled ? emojis.working : emojis.failed} **Safety System**\n${modelEmoji} **${modelNameFormatted}**`,
+			);
+
+			// OTHER SETTINGS CHECKING
+			let isNSFWBlockingEnabled = otherSettings.blockNSFWImages;
+			await updateFieldValueAndReply(
+				interaction,
+				settings,
 				"⚙️ Other:",
-				`${isNSFWBlockingEnabled ? emojis.working : emojis.failed} **NSFW Image Blocking**\n${isLoadBalancingEnabled ? emojis.working : emojis.failed} **Load Balancing**\n${modelEmoji} **${modelNameFormatted}**`,
+				`${isNSFWBlockingEnabled ? emojis.working : emojis.failed} **NSFW Image Blocking**`,
 			);
 
 			// BUTTONS
@@ -170,29 +186,36 @@ module.exports = {
 				.setStyle(ButtonStyle.Secondary);
 			const apiKeysRow = new ActionRowBuilder().addComponents(prodia, gemini);
 
-			const nsfw = new ButtonBuilder()
-				.setCustomId("blockNSFWImages")
-				.setLabel("NSFW Image Blocking")
-				.setEmoji("🔞")
+			const fallbackSystem = new ButtonBuilder()
+				.setCustomId("fallbackSystem")
+				.setLabel("Fallback System")
+				.setEmoji("🛡️")
 				.setStyle(ButtonStyle.Secondary);
-			const loadBalance = new ButtonBuilder()
-				.setCustomId("loadBalancing")
-				.setLabel("Load Balancing")
-				.setEmoji("⚖️")
+			const safetySystem = new ButtonBuilder()
+				.setCustomId("safetySystem")
+				.setLabel("Safety System")
+				.setEmoji("🔒")
 				.setStyle(ButtonStyle.Secondary);
 			const model = new ButtonBuilder()
 				.setCustomId("model")
 				.setLabel("Model")
 				.setEmoji("🔁")
 				.setStyle(ButtonStyle.Secondary);
-			const otherRow = new ActionRowBuilder().addComponents(
-				nsfw,
-				loadBalance,
+			const modelRow = new ActionRowBuilder().addComponents(
+				fallbackSystem,
+				safetySystem,
 				model,
 			);
 
+			const nsfw = new ButtonBuilder()
+				.setCustomId("blockNSFWImages")
+				.setLabel("NSFW Image Blocking")
+				.setEmoji("🔞")
+				.setStyle(ButtonStyle.Secondary);
+			const otherRow = new ActionRowBuilder().addComponents(nsfw);
+
 			await interaction.editReply({
-				components: [webhooksRow, apiKeysRow, otherRow],
+				components: [webhooksRow, apiKeysRow, modelRow, otherRow],
 			});
 		} catch (error) {
 			console.error(error);

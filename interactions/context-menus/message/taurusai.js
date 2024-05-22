@@ -12,7 +12,7 @@ const fs = require("fs").promises;
 const path = require("path");
 const { GoogleGenerativeAI } = require("@google/generative-ai");
 const {
-	safetySettings,
+	getSafetySettings,
 	handleGeminiError,
 	handleResponse,
 	fetchThreadMessages,
@@ -32,8 +32,8 @@ module.exports = {
 		const { channel, targetId } = interaction;
 		const apiKeys = await db.get("apiKeys");
 		const geminiApiKey = apiKeys.gemini;
-		const other = await db.get("other");
-		let modelId = other.model;
+		const modelSettings = await db.get("model");
+		let modelId = modelSettings.model;
 		const genAI = new GoogleGenerativeAI(geminiApiKey);
 
 		const message = await channel.messages.fetch(targetId);
@@ -126,16 +126,12 @@ module.exports = {
 				maxOutputTokens: 750,
 			};
 
-			const model = genAI.getGenerativeModel(
-				{
-					model: modelId,
-					systemInstruction: instruction,
-				},
-				{
-					safetySettings,
-					generationConfig,
-				},
-			);
+			const model = genAI.getGenerativeModel({
+				model: modelId,
+				systemInstruction: instruction,
+				safetySettings: await getSafetySettings(),
+				generationConfig,
+			});
 
 			if (
 				threadMessages &&

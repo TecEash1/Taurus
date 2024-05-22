@@ -12,7 +12,7 @@ const { EmbedBuilder } = require("discord.js");
 const { GoogleGenerativeAI } = require("@google/generative-ai");
 const {
 	botInGuild,
-	safetySettings,
+	getSafetySettings,
 	handleGeminiError,
 	handleResponse,
 } = require("../../../functions/other/utils");
@@ -27,8 +27,8 @@ module.exports = {
 	async execute(interaction) {
 		const apiKeys = await db.get("apiKeys");
 		const geminiApiKey = apiKeys.gemini;
-		const other = await db.get("other");
-		let modelId = other.model;
+		const modelSettings = await db.get("model");
+		let modelId = modelSettings.model;
 		const genAI = new GoogleGenerativeAI(geminiApiKey);
 
 		const personalityFilePath = path.join(
@@ -91,16 +91,12 @@ module.exports = {
 				maxOutputTokens: 750,
 			};
 
-			const model = genAI.getGenerativeModel(
-				{
-					model: modelId,
-					systemInstruction: instruction,
-				},
-				{
-					safetySettings,
-					generationConfig,
-				},
-			);
+			const model = genAI.getGenerativeModel({
+				model: modelId,
+				systemInstruction: instruction,
+				safetySettings: await getSafetySettings(),
+				generationConfig,
+			});
 
 			const chat = model.startChat({
 				generationConfig: {

@@ -41,6 +41,7 @@ module.exports = {
 			return await command.execute(interaction);
 		} catch (err) {
 			console.error(err);
+			// console.dir(err, { showHidden: true, depth: null });
 			await interaction.reply({
 				content: "There was an issue while executing that button!",
 				ephemeral: true,

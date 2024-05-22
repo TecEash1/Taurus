@@ -8,12 +8,13 @@ const fs = require("fs").promises;
 const path = require("path");
 const { GoogleGenerativeAI } = require("@google/generative-ai");
 const {
-	safetySettings,
+	getSafetySettings,
 	handleGeminiError,
 	handleResponse,
 	fetchThreadMessages,
 } = require("../functions/other/utils");
 const { QuickDB } = require("quick.db");
+const { get } = require("http");
 const db = new QuickDB({
 	filePath: path.join(__dirname, "../functions/other/settings.sqlite"),
 });
@@ -28,8 +29,8 @@ module.exports = {
 
 		const apiKeys = await db.get("apiKeys");
 		const geminiApiKey = apiKeys.gemini;
-		const other = await db.get("other");
-		let modelId = other.model;
+		const modelSettings = await db.get("model");
+		let modelId = modelSettings.model;
 		const genAI = new GoogleGenerativeAI(geminiApiKey);
 
 		let userQuestion;
@@ -107,16 +108,12 @@ module.exports = {
 				maxOutputTokens: 750,
 			};
 
-			const model = genAI.getGenerativeModel(
-				{
-					model: modelId,
-					systemInstruction: instruction,
-				},
-				{
-					safetySettings,
-					generationConfig,
-				},
-			);
+			const model = genAI.getGenerativeModel({
+				model: modelId,
+				systemInstruction: instruction,
+				safetySettings: await getSafetySettings(),
+				generationConfig,
+			});
 
 			if (
 				threadMessages &&
