@@ -83,9 +83,9 @@ async function handleGeminiError(err, loadingMsg) {
 				)
 				.setColor("Red");
 
-			const other = await db.get("other");
-			const loadBalance = other.loadBalancing;
-			if (loadBalance) {
+			const model = await db.get("model");
+			const fallbackSystem = model.fallbackSystem;
+			if (fallbackSystem) {
 				return "quotaErrorBalance";
 			} else {
 				for (let i = 5; i > 0; i--) {
