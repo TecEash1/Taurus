@@ -203,7 +203,7 @@ async function handleResponse(
 	return await loadingMsg.edit({ content: responseText, embeds: info_embed });
 }
 
-async function fetchThreadMessages(Gemini_API_KEY, message) {
+async function fetchThreadMessages(message) {
 	let threadMessages = [];
 	let messageDeleted;
 	userQuestion = message.content;

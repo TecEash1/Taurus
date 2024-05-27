@@ -42,7 +42,7 @@ module.exports = {
 				userQuestion: fetchedUserQuestion,
 				threadMessages: fetchedThreadMessages,
 				messageDeleted: fetchedMessageDeleted,
-			} = await fetchThreadMessages(geminiApiKey, message);
+			} = await fetchThreadMessages(message);
 			if (fetchedUserQuestion === null && fetchedThreadMessages === null)
 				return;
 			threadMessages = fetchedThreadMessages;
@@ -98,7 +98,7 @@ module.exports = {
 			);
 			const personalityLines = personalityContent.split("\n");
 
-			instruction = `${personalityLines}\n Please greet the user with a greeting and then their name which is: <@${message.author.id}> and limit your responses to 2000 characters or less.`;
+			instruction = `${personalityLines}\n Please greet the user with a greeting and then the current users name, which is: <@${message.author.id}> and limit your responses to 2000 characters or less. Please note the current user may change.`;
 
 			if (Object.keys(user_status).length) {
 				instruction += ` The user's status/presence is currently:\n${status_devices}`;
